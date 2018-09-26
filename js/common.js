@@ -38,7 +38,9 @@ var app = new Vue({
 
     data: {
         // ADD YOUR NODES' IP INTO ARRAY BELOW
-        nodes: ['142.93.142.26', '167.99.2.183'],
+        nodes: ['159.89.163.200',
+            '159.89.117.188',
+        ],
         activeItem: 'wallet',
         nknPrice: 0,
         userNodes: 1,
@@ -107,7 +109,7 @@ var app = new Vue({
                 .catch((error) => {});
 
 
-            for (var i = 0; i < this.nodes.length; i++) {
+            for (let i = 0; i < this.nodes.length; i++) {
                 axios.post('http://' + this.nodes[i] + ':30003/', {
                         "jsonrpc": "2.0",
                         "method": "getnodestate",
@@ -116,11 +118,30 @@ var app = new Vue({
                     })
                     .then((response) => {
                         this.nodesData.push(response.data.result)
+                        console.log(response.data.result)
 
                     })
-                    .catch((error) => {
-                        this.nodesData.push({ 'Addr': error.config.url, 'SyncState': 'Error' })
-                    });
+
+                    .catch((response) => {
+                        if (response.status == undefined) {
+                            console.log(this.nodes[i])
+                            axios.post('http://' + this.nodes[i] + ':40003/', {
+                                    "jsonrpc": "2.0",
+                                    "method": "getnodestate",
+                                    "params": {},
+                                    "id": 1
+                                })
+                                .then((response) => {
+                                    this.nodesData.push(response.data.result)
+
+                                })
+                                .catch((error) => {
+                                    this.nodesData.push({ 'Addr': error.config.url, 'SyncState': 'Error' })
+                                });
+                        }
+
+                    })
+
 
                 axios.post('http://' + this.nodes[i] + ':30003/', {
                         "jsonrpc": "2.0",
