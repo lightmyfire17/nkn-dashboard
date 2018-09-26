@@ -1,9 +1,10 @@
 # New Kind Of Dashboard
 New Kind Of Dashboard — web dashboard for NKN users, containing the following features:
-*Balance Check*
-*Mining Calculator*
-*Node Tracker*
-*NKN's Twitter Feedback*
+
+* Balance Check
+* Mining Calculator
+* Node Tracker
+* NKN's Twitter Feedback
 
 At the moment, the application is not available online, but you can download and run it offline.
 
