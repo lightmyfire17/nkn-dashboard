@@ -1,118 +1,142 @@
 <html>
 
 <head>
+    <title>New Kind Of Dashboard</title>
+    <link rel="shortcut icon" href=img/favicon.ico>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="nkn-wallet.js"></script>
+    <script src="libs/nkn-wallet.js"></script>
     <script src="https://unpkg.com/vue"></script>
     <script src="https://unpkg.com/vue-material@beta"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Material+Icons">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://unpkg.com/vue-material@beta/dist/vue-material.min.css">
     <link rel="stylesheet" href="https://unpkg.com/vue-material@beta/dist/theme/default.css">
-    <style>
-    #app {
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-    .md-table .md-table-content{
-      overflow-x: visible; 
-    }
-    </style>
+    <link rel="stylesheet" href="css/main.css">
 </head>
 
 <body>
     <div id="app">
-        <div class="content">
-            <div class="header">
-                <div class="tabs">
-                    <md-tabs class="md-transparent" md-alignment="right">
-                        <md-tab id="tab-home" md-label="Balance" v-on:click='activeItem = "wallet"'></md-tab>
-                        <md-tab id="tab-pages" md-label="Calculator" v-on:click='activeItem = "calc"'></md-tab>
-                        <md-tab id="tab-posts" md-label="Nodes" v-on:click='activeItem = "node"'></md-tab>
-                    </md-tabs>
-                </div>
-            </div>
-            <div class="preloader" v-if="isLoading">
-                <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
-            </div>
-            <div v-if="activeItem ==='wallet'">
-                <md-card>
-                    <md-card-header>
-                        <div class="md-title">Wallet</div>
-                    </md-card-header>
-                    <md-card-content>
-                        <md-field>
-                            <label>NKN Address</label>
-                            <md-input id="wallet" type="text"></md-input>
-                        </md-field>
-                        <div>Wallet Balance:</div>
-                        <div class="walletBalance"></div>
-                    </md-card-content>
-                    <md-card-actions>
-                        <md-button id="checkBalance" class="md-raised">Check Balance</md-button>
-                    </md-card-actions>
-                </md-card>
-            </div>
-            <div class="card-expansion calc" v-if="activeItem ==='calc'">
-                <md-card>
-                    <md-card-content>
-                        <md-card-header>
-                            <div class="md-title">Testnet Calculator</div>
-                        </md-card-header>
-                        <div>NKN Price: ${{nknPrice}}</div>
-                        <hr>
-                        <div>Average block time in seconds: 1 block/
-                            <input type="text" value='12' v-model="blocktime">s</div>
-                        <div>Current node count in NKN network:
-                            <input type="text" v-model="totalNodes">
+        <div class="preloader" v-if="isLoading">
+            <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
+        </div>
+        <div class="page-container">
+            <md-app>
+                <md-app-toolbar class="md-primary">
+                    <img class="logo" src="img/logo.png"> <span class="md-title">New Kind Of Dashboard</span><a class="release" href="https://github.com/thesheepman/nkn-dashboard/releases" target="_blank">v0.1.2</a>
+                </md-app-toolbar>
+                <md-app-drawer md-permanent="card">
+                    <md-list>
+                        <md-list-item id="tab-home" md-label="Balance" v-on:click='activeItem = "wallet"'>
+                            <md-icon>account_balance_wallet</md-icon>
+                            <span class="md-list-item-text">Balance</span>
+                        </md-list-item>
+                        <md-list-item id="tab-pages" md-label="Calculator" v-on:click='activeItem = "calc"'>
+                            <md-icon>
+                                build
+                            </md-icon>
+                            <span class="md-list-item-text">Calculator</span>
+                        </md-list-item>
+                        <md-list-item id="tab-posts" md-label="Nodes" v-on:click='activeItem = "node"'>
+                            <md-icon>language</md-icon>
+                            <span class="md-list-item-text">Nodes</span>
+                        </md-list-item>
+                        <md-list-item id="tab-posts" md-label="twitter" v-on:click='activeItem = "twitter"'>
+                            <md-icon><i class="fa fa-twitter" aria-hidden="true"></i></md-icon>
+                            <span class="md-list-item-text">Twitter</span>
+                        </md-list-item>
+                    </md-list>
+                    <div class="nav-btm">
+                        <div class="nav-btm__item">
+                            <div class="nav-btm__item-text">Current Block:</div>
+                            <div class="nav-btm__item-text">{{latestBlock}}</div>
                         </div>
-                        <div>Amount of your nodes:
-                            <input type="text" v-model="userNodes">
+                        <div class="nav-btm__item">
+                            <div class="nav-btm__item-text">NKN Price:</div>
+                            <div class="nav-btm__item-text">{{nknPrice}} $</div>
                         </div>
-                        <div>Your nodes working time in months:
-                            <input type="text" v-model="nodeTime">
-                        </div>
-                        <hr>
-                        <div>Approximate amount of NKN testnet tokens mined per day: {{testTokensDaily}} NKN</div>
-                        <div>Total testnet tokens mined per {{nodeTime}} months: {{totalTestTokens}} NKN</div>
-                        <div>NKN mainnet tokens (1:5 ratio) per {{nodeTime}} months: {{totalMainTokens}} NKN</div>
-                        <div>USD Profit per day: ${{usdProfitPerDay}}</div>
-                        <div>USD Profit per {{nodeTime}} months: ${{usdProfit}}</div>
-                    </md-card-content>
-                </md-card>
-            </div>
-            <!-- node -->
-            <div v-if="activeItem ==='node'">
-                <md-card>
-                    <md-card-content>
-                        <md-card-header>
-                            <div class="md-title">Seed Node:</div>
-                            <div>Lastest Block: {{latestBlock}}</div>
-                        </md-card-header>
-
-                    </md-card-content>
-                </md-card>
-
-                <md-table md-card>
-                    <md-table-row>
-                        <md-table-head md-numeric>#</md-table-head>
-                        <md-table-head>Node</md-table-head>
-                        <md-table-head>Status</md-table-head>
-                        <md-table-head>Tx</md-table-head>
-                    </md-table-row>
-                    <md-table-row v-for="(node, index) in nodesData" v-bind:key="index">
-                        <md-table-cell md-numeric>{{index+1}}</md-table-cell>
-                        <md-table-cell>{{node.Addr}}</md-table-cell>
-                        <md-table-cell>{{node.SyncState}}</md-table-cell>
-                        <md-table-cell>{{node.TxnCnt}}</md-table-cell>
-                    </md-table-row>
-                </md-table>
-            </div>
-            <!-- ICO -->
+                    </div>
+                </md-app-drawer>
+                <md-app-content>
+                    <div v-if="activeItem ==='wallet'">
+                        <md-card>
+                            <md-card-header>
+                                <div class="md-title">Wallet</div>
+                            </md-card-header>
+                            <md-card-content>
+                                <md-field>
+                                    <label>NKN Address</label>
+                                    <md-input id="wallet" type="text"></md-input>
+                                </md-field>
+                                <div class="walletData">
+                                    <div><b>Balance:</b> <span class="walletBalance"></span> NKN</div>
+                                </div>
+                            </md-card-content>
+                            <md-card-actions>
+                                <md-button id="checkBalance" class="md-raised">Check Balance</md-button>
+                            </md-card-actions>
+                        </md-card>
+                    </div>
+                    <div class="card-expansion calc" v-if="activeItem ==='calc'">
+                        <md-card>
+                            <md-card-header>
+                                <div class="md-title">Mining Calculator</div>
+                            </md-card-header>
+                            <md-card-content>
+                                <div>NKN Price: {{nknPrice}} $</div>
+                                <hr>
+                                <div>Average block time in seconds: 1 block/
+                                    <input type="text" value='12' v-model="blocktime">s</div>
+                                <div>Current node count in NKN network:
+                                    <input type="text" v-model="totalNodes">
+                                </div>
+                                <div>Amount of your nodes:
+                                    <input type="text" v-model="userNodes">
+                                </div>
+                                <div>Your nodes working time in months:
+                                    <input type="text" v-model="nodeTime">
+                                </div>
+                                <hr>
+                                <div>Approximate amount of NKN testnet tokens mined per day: {{testTokensDaily}} NKN</div>
+                                <div>Total testnet tokens mined per {{nodeTime}} months: {{totalTestTokens}} NKN</div>
+                                <div>NKN mainnet tokens (1:5 ratio) per {{nodeTime}} months: {{totalMainTokens}} NKN</div>
+                                <div>USD Profit per day: ${{usdProfitPerDay}}</div>
+                                <div>USD Profit per {{nodeTime}} months: ${{usdProfit}}</div>
+                            </md-card-content>
+                        </md-card>
+                    </div>
+                    <!-- node -->
+                    <div v-if="activeItem ==='node'">
+                        <md-table md-card>
+                            <md-table-row>
+                                <md-table-head md-numeric>#</md-table-head>
+                                <md-table-head>Node</md-table-head>
+                                <md-table-head>Status</md-table-head>
+                                <md-table-head>Latest Block</md-table-head>
+                                <md-table-head>Tx</md-table-head>
+                            </md-table-row>
+                            <md-table-row v-for="(node, index) in nodesData" v-bind:key="index">
+                                <md-table-cell md-numeric>{{index+1}}</md-table-cell>
+                                <md-table-cell>{{node.Addr}}</md-table-cell>
+                                <md-table-cell>{{node.SyncState}}</md-table-cell>
+                                <md-table-cell>{{latestBlocks[index]}}</md-table-cell>
+                                <md-table-cell>{{node.TxnCnt}}</md-table-cell>
+                            </md-table-row>
+                        </md-table>
+                    </div>
+                    <div v-if="activeItem ==='twitter'">
+                        <md-card>
+                            <md-card-content class='twitter-content'>
+                                <a class="twitter-timeline" data-dnt="true" data-link-color="#5693ed" href="https://twitter.com/NKN_ORG?ref_src=twsrc%5Etfw">Tweets by NKN_ORG</a>
+                                <script async src="https://platform.twitter.com/widgets.js" type="application/javascript" charset="utf-8"></script>
+                            </md-card-content>
+                        </md-card>
+                    </div>
+                </md-app-content>
+            </md-app>
         </div>
     </div>
-    <script src="common.js"></script>
+    <script src="js/common.js"></script>
 </body>
 
 </html>

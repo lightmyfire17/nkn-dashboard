@@ -1,0 +1,108 @@
+.md-app-container{
+	display: -webkit-box;
+	overflow: initial;
+	height: calc(100% - 64px);
+}
+
+.preloader {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: #f6f6f6;
+    height: 100%
+}
+
+ .md-app {
+    min-height: 350px;
+    border: 1px solid rgba(#000, .12);
+  }
+
+   // Demo purposes only
+  .md-drawer {
+    width: 230px;
+    max-width: calc(100vw - 125px);
+  }
+  .md-list-item-content{
+  	height: 50px;
+  }
+  .md-table .md-table-content{
+      overflow-x: visible; 
+    }
+    .md-list{
+    	padding: 0px;
+    }
+.md-list-item{
+	cursor: pointer;
+}
+.md-app-content .md-card{
+	margin: 8px;
+}
+.md-app .md-content.md-theme-default{
+	background-color: #f7f7f7;
+}
+.md-app.md-app-internal-drawer.md-layout-column.md-theme-default{
+	background-color: #f7f7f7;
+}
+.md-toolbar.md-theme-default.md-primary{
+	background-color: #fff;
+
+}
+.md-toolbar.md-theme-default.md-primary .md-title, .md-toolbar.md-theme-default.md-primary .md-display-1, .md-toolbar.md-theme-default.md-primary .md-display-2{
+		color: #5693ed;
+}
+.md-table table{
+	background-color: #fff;
+}
+.md-toolbar{
+	padding: 10px;
+}
+.logo{
+	margin-left: 25px;
+	height: 35px !important;
+}
+.walletData{
+	display: none;
+}
+.walletData.active{
+	display: block;
+}
+.md-drawer{
+	width: 300px;
+}
+.nav-btm__item{
+	font-size: 16px;
+	display: flex;
+	height: 35px;
+    padding: 4px 16px;
+    align-items: center;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    transition: padding .4s cubic-bezier(.25,.8,.25,1);
+    will-change: padding;
+}
+.nav-btm{
+	    position: absolute;
+    bottom: 0px;
+    width: 100%;
+}
+.timeline-Header{
+	display: none;
+}
+.release{
+	position: absolute;
+	right: 35px;
+}
