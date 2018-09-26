@@ -23,7 +23,7 @@ function checkBalance() {
 
 
         }).catch(function(error) {
-        	$('.walletData').addClass('active')
+            $('.walletData').addClass('active')
             $('.walletBalance').text('0');
         });
     }
@@ -36,65 +36,9 @@ Vue.use(VueMaterial.default)
 
 var app = new Vue({
 
-    beforeMount() {
-
-
-        axios.post('http://testnet-node-0001.nkn.org:30003/', {
-                "jsonrpc": "2.0",
-                "method": "getlatestblockheight",
-                "params": {},
-                "id": 1
-            })
-            .then((response) => {
-                this.latestBlock = response.data.result
-
-            })
-            .catch((error) => {});
-
-
-        axios.post('http://testnet-node-0001.nkn.org:30003/', {
-                "jsonrpc": "2.0",
-                "method": "getconnectioncount",
-                "params": {},
-                "id": 1
-            })
-            .then((response) => {
-                this.allNodes = response.data.result
-
-            })
-            .catch((error) => {});
-
-
-        for (var i = 0; i < this.nodes.length; i++) {
-            axios.post('http://' + this.nodes[i] + ':30003/', {
-                    "jsonrpc": "2.0",
-                    "method": "getnodestate",
-                    "params": {},
-                    "id": 1
-                })
-                .then((response) => {
-                    this.nodesData.push(response.data.result)
-
-                })
-                .catch((error) => {
-                    this.nodesData.push({ 'Addr': error.config.url, 'SyncState': 'Error' })
-                });
-
-            axios.post('http://' + this.nodes[i] + ':30003/', {
-                    "jsonrpc": "2.0",
-                    "method": "getlatestblockheight",
-                    "params": {},
-                    "id": 1
-                })
-                .then((response) => {
-                    this.latestBlocks.push(response.data.result)
-                })
-
-        }
-
-    },
-
     data: {
+        // ADD YOUR NODES' IP INTO ARRAY BELOW
+        nodes: ['142.93.142.26', '167.99.2.183'],
         activeItem: 'wallet',
         nknPrice: 0,
         userNodes: 1,
@@ -107,7 +51,6 @@ var app = new Vue({
         usdProfitPerDay: 0,
         usdProfit: 0,
         isLoading: true,
-        nodes: ['142.93.142.26', '167.99.2.183', '206.189.128.46', '178.128.165.62', '142.93.42.132', '206.189.130.50', '159.65.145.78', '206.189.143.215', '206.189.132.32', '206.189.132.14', '159.89.163.200', '159.89.117.188', '142.93.162.173', '142.93.38.7', '167.99.87.242', '104.248.246.29', '104.248.246.155', '178.128.227.228', '178.128.227.222', '159.65.234.110', '104.248.116.218', '178.128.32.244', '209.97.131.187', '178.128.7.238', '142.93.20.159'],
         nodesData: [],
         latestBlock: '',
         allNodes: '',
@@ -115,32 +58,91 @@ var app = new Vue({
         balance: 0,
         wallet: ''
     },
+    beforeMount() {
+        this.loadData()
 
+    },
     mounted() {
         setTimeout(() => {
             this.isLoading = false
         }, 1500)
+
+
     },
 
-
-    beforeCreate: function() {
-        axios.get('https://api.coinmarketcap.com/v2/ticker/2780/')
-            .then(response => {
-                this.nknPrice = response.data.data.quotes.USD.price.toFixed(3)
-            })
-
-    },
     updated: function() {
-        var secDay = 86400
-        var dailyMined = (secDay / this.blocktime) * 10
-        this.testTokensDaily = dailyMined * this.userNodes / this.totalNodes
-        this.totalTestTokens = this.testTokensDaily * 30 * this.nodeTime
-        this.totalMainTokens = this.totalTestTokens / 5
-        this.usdProfitPerDay = this.testTokensDaily / 5 * this.nknPrice
-        this.usdProfit = this.nknPrice * this.totalMainTokens
-
+        this.testnetCalc()
         checkBalance()
+    },
+    methods: {
+        loadData: function() {
+            axios.get('https://api.coinmarketcap.com/v2/ticker/2780/')
+                .then(response => {
+                    this.nknPrice = response.data.data.quotes.USD.price.toFixed(3)
+                })
 
+            axios.post('http://testnet-node-0001.nkn.org:30003/', {
+                    "jsonrpc": "2.0",
+                    "method": "getlatestblockheight",
+                    "params": {},
+                    "id": 1
+                })
+                .then((response) => {
+                    this.latestBlock = response.data.result
+
+                })
+                .catch((error) => {});
+
+
+            axios.post('http://testnet-node-0001.nkn.org:30003/', {
+                    "jsonrpc": "2.0",
+                    "method": "getconnectioncount",
+                    "params": {},
+                    "id": 1
+                })
+                .then((response) => {
+                    this.allNodes = response.data.result
+
+                })
+                .catch((error) => {});
+
+
+            for (var i = 0; i < this.nodes.length; i++) {
+                axios.post('http://' + this.nodes[i] + ':30003/', {
+                        "jsonrpc": "2.0",
+                        "method": "getnodestate",
+                        "params": {},
+                        "id": 1
+                    })
+                    .then((response) => {
+                        this.nodesData.push(response.data.result)
+
+                    })
+                    .catch((error) => {
+                        this.nodesData.push({ 'Addr': error.config.url, 'SyncState': 'Error' })
+                    });
+
+                axios.post('http://' + this.nodes[i] + ':30003/', {
+                        "jsonrpc": "2.0",
+                        "method": "getlatestblockheight",
+                        "params": {},
+                        "id": 1
+                    })
+                    .then((response) => {
+                        this.latestBlocks.push(response.data.result)
+                    })
+
+            }
+        },
+        testnetCalc: function() {
+            var secDay = 86400
+            var dailyMined = (secDay / this.blocktime) * 10
+            this.testTokensDaily = dailyMined * this.userNodes / this.totalNodes
+            this.totalTestTokens = this.testTokensDaily * 30 * this.nodeTime
+            this.totalMainTokens = this.totalTestTokens / 5
+            this.usdProfitPerDay = this.testTokensDaily / 5 * this.nknPrice
+            this.usdProfit = this.nknPrice * this.totalMainTokens
+        }
     }
 
 })
