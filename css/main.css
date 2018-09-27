@@ -1,7 +1,7 @@
 .md-app-container{
 	display: -webkit-box;
 	overflow: initial;
-	height: calc(100% - 64px);
+	height: calc(100% - 85px);
 }
 
 .preloader {
@@ -63,12 +63,13 @@
 }
 .md-toolbar.md-theme-default.md-primary .md-title, .md-toolbar.md-theme-default.md-primary .md-display-1, .md-toolbar.md-theme-default.md-primary .md-display-2{
 		color: #5693ed;
+		font-weight: lighter;
 }
 .md-table table{
 	background-color: #fff;
 }
 .md-toolbar{
-	padding: 10px;
+	padding: 25px;
 }
 .logo{
 	margin-left: 25px;
@@ -86,7 +87,7 @@
 .nav-btm__item{
 	font-size: 16px;
 	display: flex;
-	height: 35px;
+	margin: 10px 0px;
     padding: 4px 16px;
     align-items: center;
     -webkit-box-pack: justify;
@@ -105,4 +106,54 @@
 .release{
 	position: absolute;
 	right: 35px;
+}
+.md-toolbar{
+    box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+}
+.md-icon.md-theme-default.md-icon-font {
+    color: #6a9dec !important;
+    }
+    .nav-btm__item-text img{
+    	width:  35px;
+    	padding-right: 10px;
+    }
+    .block-img{
+    	position: relative;
+    	bottom: 10px;
+    }
+.bold{
+	font-weight: bold;
+}
+.interact{
+	display: none;
+}
+.tweet-list{
+	padding-left: 0px;
+}
+li.tweet{
+	list-style-type: none;
+	margin-bottom: 30px;
+	padding: 25px;
+	box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+	background-color: #fff;
+	    max-width: 60%;
+    margin: 0 auto;
+    margin-bottom: 20px;
+}
+.user span{
+	color: #8899A6;
+}
+.user img{
+	border-radius: 50%;
+}
+p.tweet{
+	    font-size: 18px;
+    line-height: 24px;
+    font-weight: 300;
+}
+.tweet span{
+		word-wrap: break-word;
+}
+.working{
+	background-color: rgba(73,195,140,0.1);
 }

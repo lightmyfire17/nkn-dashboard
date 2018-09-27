@@ -8,6 +8,7 @@
     <script src="libs/nkn-wallet.js"></script>
     <script src="https://unpkg.com/vue"></script>
     <script src="https://unpkg.com/vue-material@beta"></script>
+    <script src="https://rawgit.com/jasonmayes/Twitter-Post-Fetcher/master/js/twitterFetcher.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Material+Icons">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://unpkg.com/vue-material@beta/dist/vue-material.min.css">
@@ -48,11 +49,11 @@
                     </md-list>
                     <div class="nav-btm">
                         <div class="nav-btm__item">
-                            <div class="nav-btm__item-text">Current Block:</div>
+                            <div class="nav-btm__item-text bold"><img class="block-img" src="img/block.png" alt="">Current Block:</div>
                             <div class="nav-btm__item-text">{{latestBlock}}</div>
                         </div>
                         <div class="nav-btm__item">
-                            <div class="nav-btm__item-text">NKN Price:</div>
+                            <div class="nav-btm__item-text bold"><img src="img/coin.png" alt="">NKN Price:</div>
                             <div class="nav-btm__item-text">{{nknPrice}} $</div>
                         </div>
                     </div>
@@ -83,20 +84,32 @@
                                 <div class="md-title">Mining Calculator</div>
                             </md-card-header>
                             <md-card-content>
-                                <div>NKN Price: {{nknPrice}} $</div>
-                                <hr>
-                                <div>Average block time in seconds: 1 block/
-                                    <input type="text" value='12' v-model="blocktime">s</div>
-                                <div>Current node count in NKN network:
-                                    <input type="text" v-model="totalNodes">
+                                <div class="md-layout md-gutter">
+                                    <div class="md-layout-item md-small-size-100">
+                                        <md-field>
+                                            <label>Average block time in seconds:</label>
+                                            <md-input value='12' v-model="blocktime" type="text"></md-input>
+                                        </md-field>
+                                    </div>
+                                    <div class="md-layout-item md-small-size-100">
+                                        <md-field>
+                                            <label>Current node count in NKN network:</label>
+                                            <md-input v-model="totalNodes" type="text"></md-input>
+                                        </md-field>
+                                    </div>
+                                    <div class="md-layout-item md-small-size-100">
+                                        <md-field>
+                                            <label>Amount of your nodes:</label>
+                                            <md-input v-model="userNodes" type="text"></md-input>
+                                        </md-field>
+                                    </div>
+                                    <div class="md-layout-item md-small-size-100">
+                                        <md-field>
+                                            <label>Your nodes working time in months:</label>
+                                            <md-input v-model="nodeTime" type="text"></md-input>
+                                        </md-field>
+                                    </div>
                                 </div>
-                                <div>Amount of your nodes:
-                                    <input type="text" v-model="userNodes">
-                                </div>
-                                <div>Your nodes working time in months:
-                                    <input type="text" v-model="nodeTime">
-                                </div>
-                                <hr>
                                 <div>Approximate amount of NKN testnet tokens mined per day: {{testTokensDaily}} NKN</div>
                                 <div>Total testnet tokens mined per {{nodeTime}} months: {{totalTestTokens}} NKN</div>
                                 <div>NKN mainnet tokens (1:5 ratio) per {{nodeTime}} months: {{totalMainTokens}} NKN</div>
@@ -125,12 +138,11 @@
                         </md-table>
                     </div>
                     <div v-if="activeItem ==='twitter'">
-                        <md-card>
-                            <md-card-content class='twitter-content'>
-                                <a class="twitter-timeline" data-dnt="true" data-link-color="#5693ed" href="https://twitter.com/NKN_ORG?ref_src=twsrc%5Etfw">Tweets by NKN_ORG</a>
-                                <script async src="https://platform.twitter.com/widgets.js" type="application/javascript" charset="utf-8"></script>
-                            </md-card-content>
-                        </md-card>
+                        <div id="latest-tweets">
+                            <ul class="tweet-list">
+                                <li v-html='tweet' v-for="tweet in tweets" class="tweet">{{ tweet }}</li>
+                            </ul>
+                        </div>
                     </div>
                 </md-app-content>
             </md-app>

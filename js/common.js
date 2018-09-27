@@ -2,7 +2,7 @@ function checkBalance() {
     nknWallet.configure({
         rpcAddr: 'http://testnet-node-0001.nkn.org:30003/',
     });
-    var wallet = ''
+    var wallet = 'NhWjY9iwD5Ad8DafiEWbTo4buLpBomdttH'
     var result = wallet
     $('#checkBalance').click(function(event) {
         getbalance()
@@ -14,7 +14,7 @@ function checkBalance() {
     walletFromJson = nknWallet.loadJsonWallet(lines, p);
 
     function getbalance() {
-        result = $('#wallet').val()
+        // result = $('#wallet').val()
         walletFromJson.address = result;
         walletFromJson.queryAssetBalance().then(function(value) {
             this.balance = value.toString()
@@ -40,6 +40,9 @@ var app = new Vue({
         // ADD YOUR NODES' IP INTO ARRAY BELOW
         nodes: ['159.89.163.200',
             '159.89.117.188',
+            '142.93.162.173',
+            '142.93.38.7'
+
         ],
         activeItem: 'wallet',
         nknPrice: 0,
@@ -58,7 +61,10 @@ var app = new Vue({
         allNodes: '',
         latestBlocks: [],
         balance: 0,
-        wallet: ''
+        wallet: '',
+
+                tweets: [],
+                showing: 0
     },
     beforeMount() {
         this.loadData()
@@ -68,6 +74,9 @@ var app = new Vue({
         setTimeout(() => {
             this.isLoading = false
         }, 1500)
+
+                this.fetch();
+        setInterval(this.rotate, 6000);
 
 
     },
@@ -96,18 +105,6 @@ var app = new Vue({
                 .catch((error) => {});
 
 
-            axios.post('http://testnet-node-0001.nkn.org:30003/', {
-                    "jsonrpc": "2.0",
-                    "method": "getconnectioncount",
-                    "params": {},
-                    "id": 1
-                })
-                .then((response) => {
-                    this.allNodes = response.data.result
-
-                })
-                .catch((error) => {});
-
 
             for (let i = 0; i < this.nodes.length; i++) {
                 axios.post('http://' + this.nodes[i] + ':30003/', {
@@ -118,13 +115,10 @@ var app = new Vue({
                     })
                     .then((response) => {
                         this.nodesData.push(response.data.result)
-                        console.log(response.data.result)
 
                     })
-
                     .catch((response) => {
                         if (response.status == undefined) {
-                            console.log(this.nodes[i])
                             axios.post('http://' + this.nodes[i] + ':40003/', {
                                     "jsonrpc": "2.0",
                                     "method": "getnodestate",
@@ -136,12 +130,11 @@ var app = new Vue({
 
                                 })
                                 .catch((error) => {
-                                    this.nodesData.push({ 'Addr': error.config.url, 'SyncState': 'Error' })
+                                    this.nodesData.push({ 'Addr': this.nodes[i], 'SyncState': 'Error' })
                                 });
                         }
 
                     })
-
 
                 axios.post('http://' + this.nodes[i] + ':30003/', {
                         "jsonrpc": "2.0",
@@ -152,8 +145,22 @@ var app = new Vue({
                     .then((response) => {
                         this.latestBlocks.push(response.data.result)
                     })
+                    .catch((response) => {
+                        if (response.status == undefined) {
+                            axios.post('http://' + this.nodes[i] + ':40003/', {
+                                    "jsonrpc": "2.0",
+                                    "method": "getlatestblockheight",
+                                    "params": {},
+                                    "id": 1
+                                })
+                                .then((response) => {
+                                    this.latestBlocks.push(response.data.result)
+                                })
+                        }
+                    })
 
             }
+
         },
         testnetCalc: function() {
             var secDay = 86400
@@ -163,6 +170,36 @@ var app = new Vue({
             this.totalMainTokens = this.totalTestTokens / 5
             this.usdProfitPerDay = this.testTokensDaily / 5 * this.nknPrice
             this.usdProfit = this.nknPrice * this.totalMainTokens
+        },
+
+        fetch: function() {
+            var LatestTweets = {
+                "customCallback": this.setTweets,
+                "profile": { "screenName": 'nkn_org' },
+                "domId": 'exampleProfile',
+                "maxTweets": 20,
+                "enableLinks": true,
+                "showUser": true,
+                "showTime": true,
+                "showImages": true,
+                "lang": 'en'
+
+            };
+            twitterFetcher.fetch(LatestTweets);
+        },
+        setTweets(tweets) {
+            this.tweets = tweets;
+            console.log(this.tweets)
+        },
+        rotate: function() {
+            if (this.showing == this.tweets.length - 1) {
+                this.showing = -1;
+            }
+            this.showing += .5;
+            setTimeout(function() {
+                this.showing += .5;
+            }.bind(this), 600);
+
         }
     }
 
