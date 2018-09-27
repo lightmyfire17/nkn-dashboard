@@ -197,7 +197,7 @@ p.tweet {
 }
 
 .wallet-input {
-    width: 90%;
+    width: 80%;
 }
 
 .balance-marker {
@@ -236,6 +236,7 @@ p.tweet {
 }
 
 .market-item {
+	width: 20%;
     text-align: center;
 }
 
@@ -256,4 +257,7 @@ p.tweet {
 }
 .calc span{
 	font-weight: bold;
+}
+.w-50{
+	width: 50%;
 }
