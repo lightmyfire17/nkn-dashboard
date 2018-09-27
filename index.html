@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="https://unpkg.com/vue-material@beta/dist/vue-material.min.css">
     <link rel="stylesheet" href="https://unpkg.com/vue-material@beta/dist/theme/default.css">
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/adaptive.css">
 </head>
 
 <body>
@@ -85,28 +86,34 @@
                             </md-card-header>
                             <md-card-content>
                                 <div class="md-layout md-gutter">
-                                    <div class="md-layout-item md-small-size-100">
+                                    <div class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100">
                                         <md-field>
                                             <label>Average block time in seconds:</label>
                                             <md-input value='12' v-model="blocktime" type="text"></md-input>
                                         </md-field>
                                     </div>
-                                    <div class="md-layout-item md-small-size-100">
+                                    <div class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100">
                                         <md-field>
                                             <label>Current node count in NKN network:</label>
                                             <md-input v-model="totalNodes" type="text"></md-input>
                                         </md-field>
                                     </div>
-                                    <div class="md-layout-item md-small-size-100">
+                                    <div class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100">
                                         <md-field>
                                             <label>Amount of your nodes:</label>
                                             <md-input v-model="userNodes" type="text"></md-input>
                                         </md-field>
                                     </div>
-                                    <div class="md-layout-item md-small-size-100">
+                                    <div class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100">
                                         <md-field>
                                             <label>Your nodes working time in months:</label>
                                             <md-input v-model="nodeTime" type="text"></md-input>
+                                        </md-field>
+                                    </div>
+                                    <div class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100">
+                                        <md-field>
+                                            <label>1 Node/1 Month cost in USD</label>
+                                            <md-input v-model="nodeCost" type="text"></md-input>
                                         </md-field>
                                     </div>
                                 </div>

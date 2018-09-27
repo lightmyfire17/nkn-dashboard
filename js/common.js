@@ -2,7 +2,7 @@ function checkBalance() {
     nknWallet.configure({
         rpcAddr: 'http://testnet-node-0001.nkn.org:30003/',
     });
-    var wallet = 'NhWjY9iwD5Ad8DafiEWbTo4buLpBomdttH'
+    var wallet = ''
     var result = wallet
     $('#checkBalance').click(function(event) {
         getbalance()
@@ -14,7 +14,7 @@ function checkBalance() {
     walletFromJson = nknWallet.loadJsonWallet(lines, p);
 
     function getbalance() {
-        // result = $('#wallet').val()
+        result = $('#wallet').val()
         walletFromJson.address = result;
         walletFromJson.queryAssetBalance().then(function(value) {
             this.balance = value.toString()
@@ -39,9 +39,7 @@ var app = new Vue({
     data: {
         // ADD YOUR NODES' IP INTO ARRAY BELOW
         nodes: ['159.89.163.200',
-            '159.89.117.188',
-            '142.93.162.173',
-            '142.93.38.7'
+            '159.89.117.188'
 
         ],
         activeItem: 'wallet',
@@ -54,6 +52,7 @@ var app = new Vue({
         totalTestTokens: 0,
         totalMainTokens: 0,
         usdProfitPerDay: 0,
+        nodeCost: 1,
         usdProfit: 0,
         isLoading: true,
         nodesData: [],
@@ -62,9 +61,8 @@ var app = new Vue({
         latestBlocks: [],
         balance: 0,
         wallet: '',
-
-                tweets: [],
-                showing: 0
+        tweets: [],
+        showing: 0
     },
     beforeMount() {
         this.loadData()
@@ -75,7 +73,7 @@ var app = new Vue({
             this.isLoading = false
         }, 1500)
 
-                this.fetch();
+        this.fetch();
         setInterval(this.rotate, 6000);
 
 
@@ -165,11 +163,13 @@ var app = new Vue({
         testnetCalc: function() {
             var secDay = 86400
             var dailyMined = (secDay / this.blocktime) * 10
+            var totalNodeCost = this.nodeCost*this.nodeTime*this.userNodes
+            var dailyNodeCost = this.nodeCost/30*this.userNodes
             this.testTokensDaily = dailyMined * this.userNodes / this.totalNodes
             this.totalTestTokens = this.testTokensDaily * 30 * this.nodeTime
             this.totalMainTokens = this.totalTestTokens / 5
-            this.usdProfitPerDay = this.testTokensDaily / 5 * this.nknPrice
-            this.usdProfit = this.nknPrice * this.totalMainTokens
+            this.usdProfitPerDay = this.testTokensDaily / 5 * this.nknPrice - dailyNodeCost
+            this.usdProfit = this.nknPrice * this.totalMainTokens - totalNodeCost
         },
 
         fetch: function() {
