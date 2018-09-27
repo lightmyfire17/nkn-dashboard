@@ -25,7 +25,7 @@
         <div class="page-container">
             <md-app>
                 <md-app-toolbar class="md-primary">
-                    <img class="logo" src="img/logo.png"> <span class="md-title">New Kind Of Dashboard</span><a class="release" href="https://github.com/thesheepman/nkn-dashboard/releases" target="_blank">v0.1.2</a>
+                    <img class="logo" src="img/logo.png"> <span class="md-title">New Kind Of Dashboard</span><a class="release" href="https://github.com/thesheepman/nkn-dashboard/releases" target="_blank">v0.2.1</a>
                 </md-app-toolbar>
                 <md-app-drawer md-permanent="card">
                     <md-list>
@@ -65,18 +65,53 @@
                             <md-card-header>
                                 <div class="md-title">Wallet</div>
                             </md-card-header>
-                            <md-card-content>
-                                <md-field>
-                                    <label>NKN Address</label>
-                                    <md-input id="wallet" type="text"></md-input>
-                                </md-field>
+                            <md-card-content class='md-layout-item'>
+                                <div class="wallet-wrapper">
+                                    <md-field class='wallet-input'>
+                                        <label>NKN Address</label>
+                                        <md-input id="wallet" type="text"></md-input>
+                                    </md-field>
+                                    <md-button v-on:click='checkBalance' id="checkBalance" class="md-raised md-primary">Check Balance</md-button>
+                                </div>
                                 <div class="walletData">
-                                    <div><b>Balance:</b> <span class="walletBalance"></span> NKN</div>
+                                    <div class="balance-block">
+                                        <md-chip class='balance-marker'>NKN</md-chip><span class="walletBalance"></span></div>
+                                    <div class="balance-block">
+                                        <md-chip class='balance-marker usd'>USD</md-chip><span class="walletBalanceUsd"></span></div>
+                                    <div class="note">*Speculative balance calculated at 5:1 testnet:mainnet ratio, at current market prices. Not to be used to plan your finances, since there is no guarantee you can actually redeem shown balance.</div>
                                 </div>
                             </md-card-content>
-                            <md-card-actions>
-                                <md-button id="checkBalance" class="md-raised">Check Balance</md-button>
-                            </md-card-actions>
+                        </md-card>
+                        <md-card class='market-wrapper'>
+                            <md-card-content>
+                                <div class="market">
+                                    <div class="market-item">
+                                        <img src="img/price.png" alt="">
+                                        <div class="market-item__data">${{nknPrice}}</div>
+                                        <div class="market-item__heading">NKN PRICE</div>
+                                    </div>
+                                    <div class="market-item">
+                                        <img src="img/wallet.png" alt="">
+                                        <div class="market-item__data">${{nknCap}}M</div>
+                                        <div class="market-item__heading">MARKETCAP</div>
+                                    </div>
+                                    <div class="market-item">
+                                        <img src="img/cap.png" alt="">
+                                        <div class="market-item__data">${{nknVolume}}K</div>
+                                        <div class="market-item__heading">DAILY VOLUME</div>
+                                    </div>
+                                    <div class="market-item">
+                                        <img src="img/rank.png" alt="">
+                                        <div class="market-item__data">#{{nknRank}}</div>
+                                        <div class="market-item__heading">MARKET RANK</div>
+                                    </div>
+                                    <div class="market-item">
+                                        <img src="img/change.png" alt="">
+                                        <div class="market-item__data">{{nkn24}}%</div>
+                                        <div class="market-item__heading">CHANGE 24H</div>
+                                    </div>
+                                </div>
+                            </md-card-content>
                         </md-card>
                     </div>
                     <div class="card-expansion calc" v-if="activeItem ==='calc'">
@@ -117,11 +152,11 @@
                                         </md-field>
                                     </div>
                                 </div>
-                                <div>Approximate amount of NKN testnet tokens mined per day: {{testTokensDaily}} NKN</div>
-                                <div>Total testnet tokens mined per {{nodeTime}} months: {{totalTestTokens}} NKN</div>
-                                <div>NKN mainnet tokens (1:5 ratio) per {{nodeTime}} months: {{totalMainTokens}} NKN</div>
-                                <div>USD Profit per day: ${{usdProfitPerDay}}</div>
-                                <div>USD Profit per {{nodeTime}} months: ${{usdProfit}}</div>
+                                <div>Approximate amount of NKN testnet tokens mined per day: <span>{{testTokensDaily}} NKN</span></div>
+                                <div>Total testnet tokens mined per {{nodeTime}} months: <span>{{totalTestTokens}} NKN</span></div>
+                                <div>NKN mainnet tokens (1:5 ratio) per {{nodeTime}} months: <span>{{totalMainTokens}} NKN</span></div>
+                                <div>USD Profit per day: <span>${{usdProfitPerDay}}</span></div>
+                                <div>USD Profit per {{nodeTime}} months: <span>${{usdProfit}}</span></div>
                             </md-card-content>
                         </md-card>
                     </div>
@@ -139,7 +174,7 @@
                                 <md-table-cell md-numeric>{{index+1}}</md-table-cell>
                                 <md-table-cell>{{node.Addr}}</md-table-cell>
                                 <md-table-cell>{{node.SyncState}}</md-table-cell>
-                                <md-table-cell>{{latestBlocks[index]}}</md-table-cell>
+                                <md-table-cell>{{node.latestBlocks}}</md-table-cell>
                                 <md-table-cell>{{node.TxnCnt}}</md-table-cell>
                             </md-table-row>
                         </md-table>

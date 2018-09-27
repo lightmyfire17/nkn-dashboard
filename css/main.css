@@ -89,6 +89,7 @@
 
 .walletData {
     display: none;
+    margin-top: 10px;
 }
 
 .walletData.active {
@@ -173,6 +174,7 @@ li.tweet {
 
 .user img {
     border-radius: 50%;
+    margin-bottom: 10px;
 }
 
 p.tweet {
@@ -187,4 +189,71 @@ p.tweet {
 
 .working {
     background-color: rgba(73, 195, 140, 0.1);
+}
+
+.wallet-wrapper {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.wallet-input {
+    width: 90%;
+}
+
+.balance-marker {
+    background-color: #6a9dec !important;
+    color: #fff !important;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.balance-marker.usd {
+    background-color: #42b983 !important;
+}
+
+.walletData span {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.balance-block {
+    display: inline-block;
+    margin-right: 30px;
+}
+
+.note {
+    margin-top: 25px;
+    font-weight: lighter;
+    color: #b3b3b3;
+}
+
+.md-app-internal-drawer .md-app-scroller {
+    overflow-x: hidden !important;
+}
+
+.market-item__data {
+    font-size: 30px;
+}
+
+.market-item {
+    text-align: center;
+}
+
+.market-item__heading {
+    color: grey;
+    font-size: 18px;
+    margin-top: 5px;
+}
+
+.market {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+}
+
+.market-wrapper {
+    max-height: 189px;
+}
+.calc span{
+	font-weight: bold;
 }
