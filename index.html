@@ -25,7 +25,7 @@
         <div class="page-container">
             <md-app>
                 <md-app-toolbar class="md-primary">
-                    <img class="logo" src="img/logo.png"> <span class="md-title">New Kind Of Dashboard</span><a class="release" href="https://github.com/thesheepman/nkn-dashboard/releases" target="_blank">v0.2.1</a>
+                    <img class="logo" src="img/logo.png"> <span class="md-title">New Kind Of Dashboard</span><a class="release" href="https://github.com/thesheepman/nkn-dashboard/releases" target="_blank">v0.2.2</a>
                 </md-app-toolbar>
                 <md-app-drawer md-permanent="card">
                     <md-list>
@@ -151,6 +151,12 @@
                                             <md-input v-model="nodeCost" type="text"></md-input>
                                         </md-field>
                                     </div>
+                                    <div class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100">
+                                        <md-field>
+                                            <label>Bandwidth/Month cost in USD</label>
+                                            <md-input v-model="bandWidthCost" type="text"></md-input>
+                                        </md-field>
+                                    </div>
                                 </div>
                                 <div>Approximate amount of NKN testnet tokens mined per day: <span>{{testTokensDaily}} NKN</span></div>
                                 <div>Total testnet tokens mined per {{nodeTime}} months: <span>{{totalTestTokens}} NKN</span></div>
@@ -162,6 +168,41 @@
                     </div>
                     <!-- node -->
                     <div v-if="activeItem ==='node'">
+                        <div class="card-wrapper">
+                            <md-card class='w-70'>
+                                <md-card-header>
+                                    <div class="md-title">Node Manager</div>
+                                </md-card-header>
+                                <md-card-content>
+                                    <md-radio v-model="currentOrder" value="default">All states</md-radio>
+                                    <md-radio v-model="currentOrder" value="PersistFinished">PersistFinished</md-radio>
+                                    <md-radio v-model="currentOrder" value="SyncFinished">SyncFinished</md-radio>
+                                    <md-radio v-model="currentOrder" value="SyncStarted">SyncStarted</md-radio>
+                                    <md-radio v-model="currentOrder" value="Error">Error</md-radio>
+                                </md-card-content>
+                            </md-card>
+                            <md-card class='w-30'>
+                                <md-card-header>
+                                    <div class="md-title">Seed Node</div>
+                                </md-card-header>
+                                <md-card-content>
+                                    <div class="market">
+                                        <div class="market-item w-auto">
+                                            <div class="market-item__heading">Latest Block</div>
+                                            <div class="market-item__data">{{latestBlock}}</div>
+                                        </div>
+                                        <div class="market-item w-auto">
+                                            <div class="market-item__heading">Status</div>
+                                            <div class="market-item__data">{{seedStatus}}</div>
+                                        </div>
+                                        <div class="market-item w-auto">
+                                            <div class="market-item__heading">Version</div>
+                                            <div class="market-item__data">{{seedVersion}}</div>
+                                        </div>
+                                    </div>
+                                </md-card-content>
+                            </md-card>
+                        </div>
                         <md-table md-card>
                             <md-table-row>
                                 <md-table-head md-numeric>#</md-table-head>
@@ -169,6 +210,7 @@
                                 <md-table-head>Status</md-table-head>
                                 <md-table-head>Latest Block</md-table-head>
                                 <md-table-head>Tx</md-table-head>
+                                <md-table-head>Version</md-table-head>
                             </md-table-row>
                             <md-table-row v-for="(node, index) in sortedArray" v-bind:key="index">
                                 <md-table-cell md-numeric>{{index+1}}</md-table-cell>
@@ -176,6 +218,7 @@
                                 <md-table-cell>{{node.SyncState}}</md-table-cell>
                                 <md-table-cell>{{node.latestBlocks}}</md-table-cell>
                                 <md-table-cell>{{node.TxnCnt}}</md-table-cell>
+                                <md-table-cell>{{node.version}}</md-table-cell>
                             </md-table-row>
                         </md-table>
                     </div>

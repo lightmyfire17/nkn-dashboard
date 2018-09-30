@@ -236,7 +236,6 @@ p.tweet {
 }
 
 .market-item {
-	width: 20%;
     text-align: center;
 }
 
@@ -255,9 +254,52 @@ p.tweet {
 .market-wrapper {
     max-height: 189px;
 }
-.calc span{
-	font-weight: bold;
+
+.calc span {
+    font-weight: bold;
 }
-.w-50{
-	width: 50%;
+
+.w-50 {
+    width: 48%;
+}
+
+.card-wrapper {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+}
+
+.w-70 {
+    width: 67%;
+}
+
+.w-30 {
+    width: 30%;
+}
+
+.md-radio {
+    margin-right: 30px;
+}
+
+.w-auto {
+    width: auto;
+}
+
+.card-wrapper .market-item {
+    text-align: left;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.card-wrapper .market-item__data {
+    font-size: 18px;
+}
+
+.card-wrapper .market-item__heading {
+    color: #42b983;
+    font-size: 18px;
+}
+
+.md-card .md-title {
+    font-weight: bold;
 }

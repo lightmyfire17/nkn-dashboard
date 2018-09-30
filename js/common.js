@@ -51,6 +51,7 @@ var app = new Vue({
         totalTestTokens: 0,
         totalMainTokens: 0,
         usdProfitPerDay: 0,
+        bandWidthCost: 1,
         nodeCost: 1,
         usdProfit: 0,
         isLoading: true,
@@ -68,38 +69,65 @@ var app = new Vue({
         nknVolume: 0,
         nknRank: 0,
         nkn24: 0,
-        currentOrder: ''
+        nknWeekly: 0,
+        seedVersion: '',
+        time: '',
+        currentOrder: 'default'
     },
-    beforeMount() {
+    created() {
         this.loadData()
-
     },
     mounted() {
-        setTimeout(() => {
-            this.isLoading = false
-        }, 1500)
-
+        this.preload()
         this.fetch();
         setInterval(this.rotate, 6000);
+        setInterval(this.loadData, 60000);
+        setInterval(this.preload, 60010);
     },
-
-    updated: function() {
+    updated() {
         this.testnetCalc()
-        this.getBlocks()
     },
     computed: {
         sortedArray: function() {
-            function compare(a, b) {
-                if (a.SyncState < b.SyncState)
-                    return -1;
-                if (a.SyncState > b.SyncState)
-                    return 1;
-                return 0;
+            var customNodes = []
+            if (this.currentOrder === 'default') {
+
+
+                function compare(a, b) {
+                    if (a.SyncState < b.SyncState)
+                        return -1;
+                    if (a.SyncState > b.SyncState)
+                        return 1;
+                    return 0;
+                }
+                return this.nodesData.sort(compare);
+            } else {
+                for (i = 0; i < this.nodesData.length; i++) {
+                    if (this.nodesData[i].SyncState === this.currentOrder) {
+                        customNodes.push(this.nodesData[i])
+                    }
+                }
+                return customNodes
             }
-            return this.nodesData.sort(compare);
         }
     },
     methods: {
+        preload: function() {
+            this.isLoading = true
+            if (this.nodesData.length === this.nodes.length) {
+                this.getBlocks()
+                this.getVersion()
+                setTimeout(() => {
+                    this.isLoading = false
+                }, 1000)
+
+            } else {
+                setTimeout(() => {
+                    this.preload()
+                }, 1000)
+            }
+
+        },
         loadData: function() {
             this.nodesData = []
             this.latestBlocks = []
@@ -110,6 +138,7 @@ var app = new Vue({
                     this.nknCap = ((response.data.data.quotes.USD.market_cap) / 1000000).toFixed(2)
                     this.nknVolume = ((response.data.data.quotes.USD.volume_24h) / 1000).toFixed(2)
                     this.nkn24 = response.data.data.quotes.USD.percent_change_24h
+                    this.nknWeekly = response.data.data.quotes.USD.percent_change_7d
                 })
 
             axios.post('http://testnet-node-0001.nkn.org:30003/', {
@@ -124,6 +153,28 @@ var app = new Vue({
                 })
                 .catch((error) => {});
 
+            axios.post('http://testnet-node-0001.nkn.org:30003/', {
+                    "jsonrpc": "2.0",
+                    "method": "getnodestate",
+                    "params": {},
+                    "id": 1
+                })
+                .then((response) => {
+                    this.seedStatus = response.data.result.SyncState
+                })
+                .catch((error) => {});
+
+            axios.post('http://testnet-node-0001.nkn.org:30003/', {
+                    "jsonrpc": "2.0",
+                    "method": "getversion",
+                    "params": {},
+                    "id": 1
+                })
+                .then((response) => {
+                    this.seedVersion = response.data.result
+
+                })
+                .catch((error) => {});
 
 
             for (let i = 0; i < this.nodes.length; i++) {
@@ -156,7 +207,6 @@ var app = new Vue({
 
                     })
             }
-
         },
         getBlocks: function() {
             for (let i = 0; i < this.nodesData.length; i++) {
@@ -184,16 +234,44 @@ var app = new Vue({
                     })
             }
         },
+        getVersion: function() {
+            for (let i = 0; i < this.nodesData.length; i++) {
+                axios.post('http://' + this.nodesData[i].Addr + ':30003/', {
+                        "jsonrpc": "2.0",
+                        "method": "getversion",
+                        "params": {},
+                        "id": 1
+                    })
+                    .then((response) => {
+                        this.nodesData[i].version = response.data.result
+                    })
+                    .catch((response) => {
+                        if (response.status == undefined) {
+                            axios.post('http://' + this.nodesData[i].Addr + ':40003/', {
+                                    "jsonrpc": "2.0",
+                                    "method": "getversion",
+                                    "params": {},
+                                    "id": 1
+                                })
+                                .then((response) => {
+                                    this.nodesData[i].version = response.data.result
+                                })
+                        }
+                    })
+            }
+        },
         testnetCalc: function() {
             var secDay = 86400
             var dailyMined = (secDay / this.blocktime) * 10
             var totalNodeCost = this.nodeCost * this.nodeTime * this.userNodes
+            var totalBandwidthCost = this.bandWidthCost * this.nodeTime * this.userNodes
             var dailyNodeCost = this.nodeCost / 30 * this.userNodes
+            var dailyBandwidthCost = this.bandWidthCost / 30 * this.userNodes
             this.testTokensDaily = dailyMined * this.userNodes / this.totalNodes
             this.totalTestTokens = this.testTokensDaily * 30 * this.nodeTime
             this.totalMainTokens = this.totalTestTokens / 5
-            this.usdProfitPerDay = this.testTokensDaily / 5 * this.nknPrice - dailyNodeCost
-            this.usdProfit = this.nknPrice * this.totalMainTokens - totalNodeCost
+            this.usdProfitPerDay = this.testTokensDaily / 5 * this.nknPrice - dailyBandwidthCost - dailyNodeCost
+            this.usdProfit = this.nknPrice * this.totalMainTokens - totalBandwidthCost - totalNodeCost
         },
 
         fetch: function() {
