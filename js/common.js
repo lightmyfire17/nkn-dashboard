@@ -37,8 +37,9 @@ var app = new Vue({
 
     data: {
         // ADD YOUR NODES' IP INTO ARRAY BELOW
-        nodes: ['159.89.163.200',
-            '159.89.117.188'
+        nodes: [
+            '142.93.237.19',
+            '159.65.201.239'
         ],
         activeItem: 'wallet',
         nknPrice: 0,
@@ -66,7 +67,8 @@ var app = new Vue({
         nknCap: 0,
         nknVolume: 0,
         nknRank: 0,
-        nkn24: 0
+        nkn24: 0,
+        currentOrder: ''
     },
     beforeMount() {
         this.loadData()
@@ -84,6 +86,18 @@ var app = new Vue({
     updated: function() {
         this.testnetCalc()
         this.getBlocks()
+    },
+    computed: {
+        sortedArray: function() {
+            function compare(a, b) {
+                if (a.SyncState < b.SyncState)
+                    return -1;
+                if (a.SyncState > b.SyncState)
+                    return 1;
+                return 0;
+            }
+            return this.nodesData.sort(compare);
+        }
     },
     methods: {
         loadData: function() {
