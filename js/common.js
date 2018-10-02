@@ -38,8 +38,7 @@ var app = new Vue({
     data: {
         // ADD YOUR NODES' IP INTO ARRAY BELOW
         nodes: [
-            '142.93.237.19',
-            '159.65.201.239'
+            '46.101.217.170'
         ],
         activeItem: 'wallet',
         nknPrice: 0,
@@ -91,8 +90,6 @@ var app = new Vue({
         sortedArray: function() {
             var customNodes = []
             if (this.currentOrder === 'default') {
-
-
                 function compare(a, b) {
                     if (a.SyncState < b.SyncState)
                         return -1;
