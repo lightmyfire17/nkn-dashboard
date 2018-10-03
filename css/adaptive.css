@@ -1,6 +1,17 @@
 @media only screen and (max-width: 1800px) {
+
     .md-field.md-focused label,
     .md-field.md-has-value label {
         top: -15px;
+    }
+
+    .mini-card__content {
+        font-size: 44px;
+    }
+}
+
+@media only screen and (max-width: 1450px) {
+    .mini-card__content {
+        font-size: 30px;
     }
 }

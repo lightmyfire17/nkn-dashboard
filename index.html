@@ -2,8 +2,8 @@
 
 <head>
     <title>New Kind Of Dashboard</title>
-    <link rel="shortcut icon" href=img/favicon.ico>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <link rel="shortcut icon" href=img/favicon.ico> <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous">
+    </script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="libs/nkn-wallet.js"></script>
     <script src="https://unpkg.com/vue"></script>
@@ -25,7 +25,7 @@
         <div class="page-container">
             <md-app>
                 <md-app-toolbar class="md-primary">
-                    <img class="logo" src="img/logo.png"> <span class="md-title">New Kind Of Dashboard</span><a class="release" href="https://github.com/thesheepman/nkn-dashboard/releases" target="_blank">v0.2.2</a>
+                    <img class="logo" src="img/logo.png"> <span class="md-title">New Kind Of Dashboard</span><a class="release" href="https://github.com/thesheepman/nkn-dashboard/releases" target="_blank">v0.3.1</a>
                 </md-app-toolbar>
                 <md-app-drawer md-permanent="card">
                     <md-list>
@@ -43,6 +43,10 @@
                             <md-icon>language</md-icon>
                             <span class="md-list-item-text">Nodes</span>
                         </md-list-item>
+                        <md-list-item id="tab-posts" md-label="Nodes" v-on:click='activeItem = "blocks"'>
+                            <md-icon>widgets</md-icon>
+                            <span class="md-list-item-text">Blocks</span>
+                        </md-list-item>
                         <md-list-item id="tab-posts" md-label="twitter" v-on:click='activeItem = "twitter"'>
                             <md-icon><i class="fa fa-twitter" aria-hidden="true"></i></md-icon>
                             <span class="md-list-item-text">Twitter</span>
@@ -51,47 +55,48 @@
                     <div class="nav-btm">
                         <div class="nav-btm__item">
                             <div class="nav-btm__item-text bold"><img class="block-img" src="img/block.png" alt="">Current Block:</div>
-                            <div class="nav-btm__item-text">{{latestBlock}}</div>
-                        </div>
-                        <div class="nav-btm__item">
-                            <div class="nav-btm__item-text bold"><img src="img/coin.png" alt="">NKN Price:</div>
-                            <div class="nav-btm__item-text">{{nknPrice}} $</div>
-                        </div>
-                    </div>
+                                <div class="nav-btm__item-text">{{latestBlock}}</div>
+                            </div>
+                            <div class="nav-btm__item">
+                                <div class="nav-btm__item-text bold"><img src="img/coin.png" alt="">NKN Price:</div>
+                                    <div class="nav-btm__item-text">{{nknPrice}} $</div>
+                                </div>
+                            </div>
                 </md-app-drawer>
                 <md-app-content>
                     <div v-if="activeItem ==='wallet'">
-                        <md-card class='market-wrapper'>
-                            <md-card-content>
-                                <div class="market">
-                                    <div class="market-item">
-                                        <img src="img/price.png" alt="">
-                                        <div class="market-item__data">${{nknPrice}}</div>
-                                        <div class="market-item__heading">NKN PRICE</div>
-                                    </div>
-                                    <div class="market-item">
-                                        <img src="img/wallet.png" alt="">
-                                        <div class="market-item__data">${{nknCap}}M</div>
-                                        <div class="market-item__heading">MARKETCAP</div>
-                                    </div>
-                                    <div class="market-item">
-                                        <img src="img/cap.png" alt="">
-                                        <div class="market-item__data">${{nknVolume}}K</div>
-                                        <div class="market-item__heading">DAILY VOLUME</div>
-                                    </div>
-                                    <div class="market-item">
-                                        <img src="img/rank.png" alt="">
-                                        <div class="market-item__data">#{{nknRank}}</div>
-                                        <div class="market-item__heading">MARKET RANK</div>
-                                    </div>
-                                    <div class="market-item">
-                                        <img src="img/change.png" alt="">
-                                        <div class="market-item__data">{{nkn24}}%</div>
-                                        <div class="market-item__heading">CHANGE 24H</div>
-                                    </div>
+                        <div class="mini-card-wrapper --market">
+                            <div class="mini-card --green">
+                                <div class="mini-layout">
+                                <div class="mini-card__title">NKN Price</div>
+                                <div class="mini-card__content">${{nknPrice}}</div>
                                 </div>
-                            </md-card-content>
-                        </md-card>
+                            </div>
+                            <div class="mini-card --blue">
+                                <div class="mini-layout">
+                                <div class="mini-card__title">Marketcap</div>
+                                <div class="mini-card__content">{{nknCap}}M</div>
+                                </div>
+                            </div>
+                            <div class="mini-card --green">
+                                <div class="mini-layout">
+                                <div class="mini-card__title">Daily Volume</div>
+                                <div class="mini-card__content">${{nknVolume}}K</div>
+                                </div>
+                            </div>
+                            <div class="mini-card --blue">
+                                <div class="mini-layout">
+                                <div class="mini-card__title">Market Rank</div>
+                                <div class="mini-card__content">#{{nknRank}}</div>
+                                </div>
+                            </div>
+                            <div class="mini-card --green">
+                                <div class="mini-layout">
+                                <div class="mini-card__title">Change 24</div>
+                                <div class="mini-card__content">{{nkn24}}%</div>
+                                </div>
+                            </div>
+                        </div>
                         <md-card class='w-50'>
                             <md-card-header>
                                 <div class="md-title">Wallet</div>
@@ -106,9 +111,11 @@
                                 </div>
                                 <div class="walletData">
                                     <div class="balance-block">
-                                        <md-chip class='balance-marker'>NKN</md-chip><span class="walletBalance"></span></div>
+                                        <md-chip class='balance-marker'>NKN</md-chip><span class="walletBalance"></span>
+                                    </div>
                                     <div class="balance-block">
-                                        <md-chip class='balance-marker usd'>USD</md-chip><span class="walletBalanceUsd"></span></div>
+                                        <md-chip class='balance-marker usd'>USD</md-chip><span class="walletBalanceUsd"></span>
+                                    </div>
                                     <div class="note">*Speculative balance calculated at 5:1 testnet:mainnet ratio, at current market prices. Not to be used to plan your finances, since there is no guarantee you can actually redeem shown balance.</div>
                                 </div>
                             </md-card-content>
@@ -228,6 +235,44 @@
                                 <li v-html='tweet' v-for="tweet in tweets" class="tweet">{{ tweet }}</li>
                             </ul>
                         </div>
+                    </div>
+                    <div v-if="activeItem ==='blocks'">
+                        <div class="mini-card-wrapper">
+                            <div class="mini-card --green">
+                                <div class="mini-layout">
+                                <div class="mini-card__title">Latest Block</div>
+                                <div class="mini-card__content">{{latestBlock}}</div>
+                                </div>
+                            </div>
+                            <div class="mini-card --blue">
+                                <div class="mini-layout">
+                                <div class="mini-card__title">Created</div>
+                                <div class="mini-card__content">{{latestTiming}}</div>
+                                </div>
+                            </div>
+                            <div class="mini-card --red">
+                                <div class="mini-layout">
+                                <div class="mini-card__title">Mempool Size</div>
+                                <div class="mini-card__content">{{memPool}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <md-table md-card>
+                            <md-table-row>
+                                <md-table-head>Block Height</md-table-head>
+                                <md-table-head>Created</md-table-head>
+                                <md-table-head>Miner</md-table-head>
+                                <md-table-head>Reward</md-table-head>
+                                <md-table-head>Transactions</md-table-head>
+                            </md-table-row>
+                            <md-table-row v-for="(miner,index) in sortedMiners" v-bind:key="index">
+                                <md-table-cell>{{miner.height}}</md-table-cell>
+                                <md-table-cell>{{miner.time}}</md-table-cell>
+                                <md-table-cell>{{miner.miner}}</md-table-cell>
+                                <md-table-cell>{{miner.reward}} NKN</md-table-cell>
+                                <md-table-cell>{{miner.tx}}</md-table-cell>
+                            </md-table-row>
+                        </md-table>
                     </div>
                 </md-app-content>
             </md-app>

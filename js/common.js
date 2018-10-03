@@ -1,5 +1,5 @@
 getBalance = function() {
-    var nknPrice
+    let nknPrice
     axios.get('https://api.coinmarketcap.com/v2/ticker/2780/')
         .then(response => {
             nknPrice = response.data.data.quotes.USD.price.toFixed(3)
@@ -8,12 +8,12 @@ getBalance = function() {
     nknWallet.configure({
         rpcAddr: 'http://testnet-node-0001.nkn.org:30003/',
     });
-    var walletFromJson = "";
-    var lines = `{"Version":"0.0.1","PasswordHash":"be2ef4971b24405df0541f95fe6158ac661e69971337ff7260b219d1056ebc3b","MasterKey":"cb6624d3be4b23ba9fb9ed746595817ebc0e63a44772175a638548ca264a329f","IV":"2a18decef1149b47fc9f50965b055b2b","PrivateKeyEncrypted":"5158f5e75067629c963524f30e62df14cc3cbf37422f72e23c2fce9b303d11af","Address":"NcNRJJZoQBpEZhFfHM5Gjrzc9bSK6kda7u","ProgramHash":"b482a02031a097da723e8121b54bfe6671b9e576","ContractData":"232103b9b80d4d3d25bc7719fe7a45aa283346488988179bbc1852d705ef470930cb74ac0100b482a02031a097da723e8121b54bfe6671b9e576"}`
-    var p = `test`;
+    let walletFromJson = "";
+    let lines = `{"Version":"0.0.1","PasswordHash":"be2ef4971b24405df0541f95fe6158ac661e69971337ff7260b219d1056ebc3b","MasterKey":"cb6624d3be4b23ba9fb9ed746595817ebc0e63a44772175a638548ca264a329f","IV":"2a18decef1149b47fc9f50965b055b2b","PrivateKeyEncrypted":"5158f5e75067629c963524f30e62df14cc3cbf37422f72e23c2fce9b303d11af","Address":"NcNRJJZoQBpEZhFfHM5Gjrzc9bSK6kda7u","ProgramHash":"b482a02031a097da723e8121b54bfe6671b9e576","ContractData":"232103b9b80d4d3d25bc7719fe7a45aa283346488988179bbc1852d705ef470930cb74ac0100b482a02031a097da723e8121b54bfe6671b9e576"}`
+    let p = `test`;
     let updatedBalance = 0
     walletFromJson = nknWallet.loadJsonWallet(lines, p);
-    var result = $('#wallet').val()
+    let result = $('#wallet').val()
     walletFromJson.address = result;
     walletFromJson.queryAssetBalance().then(function(value) {
         updatedBalance = value.toString()
@@ -33,7 +33,7 @@ getBalance = function() {
 Vue.use(VueMaterial.default)
 
 
-var app = new Vue({
+let app = new Vue({
 
     data: {
         // ADD YOUR NODES' IP INTO ARRAY BELOW
@@ -63,6 +63,7 @@ var app = new Vue({
         wallet: '',
         tweets: [],
         showing: 0,
+        blockCounter: 0,
         walletAddress: '',
         walletBalanceUsd: 0,
         nknCap: 0,
@@ -72,12 +73,14 @@ var app = new Vue({
         nknWeekly: 0,
         seedVersion: '',
         time: '',
+        miners: [],
         currentOrder: 'default'
     },
     created() {
         this.loadData()
     },
     mounted() {
+        this.getMiners()
         this.preload()
         this.fetch();
         setInterval(this.rotate, 6000);
@@ -89,7 +92,7 @@ var app = new Vue({
     },
     computed: {
         sortedArray: function() {
-            var customNodes = []
+            let customNodes = []
             if (this.currentOrder === 'default') {
                 function compare(a, b) {
                     if (a.SyncState < b.SyncState)
@@ -107,6 +110,16 @@ var app = new Vue({
                 }
                 return customNodes
             }
+        },
+        sortedMiners: function() {
+            function compare(a, b) {
+                if (a.height > b.height)
+                    return -1;
+                if (a.height < b.height)
+                    return 1;
+                return 0;
+            }
+            return this.miners.sort(compare);
         }
     },
     methods: {
@@ -115,9 +128,10 @@ var app = new Vue({
             if (this.nodesData.length === this.nodes.length) {
                 this.getBlocks()
                 this.getVersion()
+                this.getMiners()
                 setTimeout(() => {
                     this.isLoading = false
-                }, 1000)
+                }, 1500)
 
             } else {
                 setTimeout(() => {
@@ -147,6 +161,19 @@ var app = new Vue({
                 })
                 .then((response) => {
                     this.latestBlock = response.data.result
+                    this.blockCounter = response.data.result
+
+                })
+                .catch((error) => {});
+
+            axios.post('http://testnet-node-0001.nkn.org:30003/', {
+                    "jsonrpc": "2.0",
+                    "method": "getrawmempool",
+                    "params": {},
+                    "id": 1
+                })
+                .then((response) => {
+                    this.memPool = response.data.result.length
 
                 })
                 .catch((error) => {});
@@ -231,6 +258,91 @@ var app = new Vue({
                         }
                     })
             }
+            axios.post('http://testnet-node-0001.nkn.org:30003/', {
+                    "jsonrpc": "2.0",
+                    "method": "getblock",
+                    "params": { "height": this.latestBlock },
+                    "id": 1
+                })
+                .then((response) => {
+                    let timestamp = response.data.result.header.timestamp * 1000
+                    let previous = new Date(timestamp)
+                    let current = new Date()
+                    let msPerMinute = 60 * 1000;
+                    let msPerHour = msPerMinute * 60;
+                    let msPerDay = msPerHour * 24;
+                    let msPerMonth = msPerDay * 30;
+                    let msPerYear = msPerDay * 365;
+                    let blockStamp = ''
+                    let elapsed = current - previous;
+
+                    if (elapsed < msPerMinute) {
+                        blockStamp = Math.round(elapsed / 1000) + ' seconds ago';
+                    } else if (elapsed < msPerHour) {
+                        blockStamp = Math.round(elapsed / msPerMinute) + ' minutes ago';
+                    } else if (elapsed < msPerDay) {
+                        blockStamp = Math.round(elapsed / msPerHour) + ' hours ago';
+                    } else if (elapsed < msPerMonth) {
+                        blockStamp = 'approximately ' + Math.round(elapsed / msPerDay) + ' days ago';
+                    } else if (elapsed < msPerYear) {
+                        blockStamp = 'approximately ' + Math.round(elapsed / msPerMonth) + ' months ago';
+                    } else {
+                        blockStamp = 'approximately ' + Math.round(elapsed / msPerYear) + ' years ago';
+                    }
+
+                    this.latestTiming = blockStamp
+                })
+
+        },
+        getMiners: function() {
+            this.blockCounter = this.latestBlock
+            this.miners = []
+            for (let i = 0; i < 20; i++) {
+
+                axios.post('http://testnet-node-0001.nkn.org:30003/', {
+                        "jsonrpc": "2.0",
+                        "method": "getblock",
+                        "params": { "height": this.blockCounter },
+                        "id": 1
+                    })
+                    .then((response) => {
+                        let timestamp = response.data.result.header.timestamp * 1000
+                        let previous = new Date(timestamp)
+                        let current = new Date()
+                        let msPerMinute = 60 * 1000;
+                        let msPerHour = msPerMinute * 60;
+                        let msPerDay = msPerHour * 24;
+                        let msPerMonth = msPerDay * 30;
+                        let msPerYear = msPerDay * 365;
+                        let blockStamp = ''
+                        let elapsed = current - previous;
+
+                        if (elapsed < msPerMinute) {
+                            blockStamp = Math.round(elapsed / 1000) + ' seconds ago';
+                        } else if (elapsed < msPerHour) {
+                            blockStamp = Math.round(elapsed / msPerMinute) + ' minutes ago';
+                        } else if (elapsed < msPerDay) {
+                            blockStamp = Math.round(elapsed / msPerHour) + ' hours ago';
+                        } else if (elapsed < msPerMonth) {
+                            blockStamp = 'approximately ' + Math.round(elapsed / msPerDay) + ' days ago';
+                        } else if (elapsed < msPerYear) {
+                            blockStamp = 'approximately ' + Math.round(elapsed / msPerMonth) + ' months ago';
+                        } else {
+                            blockStamp = 'approximately ' + Math.round(elapsed / msPerYear) + ' years ago';
+                        }
+
+                        this.miners.push({
+                            'height': response.data.result.header.height,
+                            'time': blockStamp,
+                            'tx': response.data.result.transactions.length,
+                            'reward': response.data.result.transactions[0].outputs[0].value,
+                            'miner': response.data.result.transactions[0].outputs[0].address
+                        })
+
+                    })
+                this.blockCounter--
+            }
+
         },
         getVersion: function() {
             for (let i = 0; i < this.nodesData.length; i++) {
@@ -259,12 +371,12 @@ var app = new Vue({
             }
         },
         testnetCalc: function() {
-            var secDay = 86400
-            var dailyMined = (secDay / this.blocktime) * 10
-            var totalNodeCost = this.nodeCost * this.nodeTime * this.userNodes
-            var totalBandwidthCost = this.bandWidthCost * this.nodeTime * this.userNodes
-            var dailyNodeCost = this.nodeCost / 30 * this.userNodes
-            var dailyBandwidthCost = this.bandWidthCost / 30 * this.userNodes
+            let secDay = 86400
+            let dailyMined = (secDay / this.blocktime) * 10
+            let totalNodeCost = this.nodeCost * this.nodeTime * this.userNodes
+            let totalBandwidthCost = this.bandWidthCost * this.nodeTime * this.userNodes
+            let dailyNodeCost = this.nodeCost / 30 * this.userNodes
+            let dailyBandwidthCost = this.bandWidthCost / 30 * this.userNodes
             this.testTokensDaily = dailyMined * this.userNodes / this.totalNodes
             this.totalTestTokens = this.testTokensDaily * 30 * this.nodeTime
             this.totalMainTokens = this.totalTestTokens / 5
@@ -273,7 +385,7 @@ var app = new Vue({
         },
 
         fetch: function() {
-            var LatestTweets = {
+            let LatestTweets = {
                 "customCallback": this.setTweets,
                 "profile": { "screenName": 'nkn_org' },
                 "domId": 'exampleProfile',

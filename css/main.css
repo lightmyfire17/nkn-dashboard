@@ -29,7 +29,8 @@
 .md-app {
     min-height: 350px;
     border: 1px solid rgba(#000, .12);
-} // Demo purposes only
+}
+
 .md-drawer {
     width: 230px;
     max-width: calc(100vw - 125px);
@@ -302,4 +303,95 @@ p.tweet {
 
 .md-card .md-title {
     font-weight: bold;
+}
+
+.md-table-row:nth-child(even) {
+    background-color: #f4f5f6;
+}
+
+.md-table-cell {
+    font-size: 14px;
+    height: 60px;
+    border: 0px !important;
+}
+
+.md-table-head-label {
+    font-size: 14px;
+}
+
+.mini-card-wrapper {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    margin: 8px;
+}
+
+.mini-card {
+    -webkit-box-flex: 0;
+    flex-basis: 33.33333333333333%;
+    flex-grow: 0;
+    max-width: 33.33333333333333%;
+    background: #fff;
+    -ms-flex-align: center;
+    -ms-flex-wrap: wrap;
+    -webkit-box-align: center;
+    align-items: center;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 16px;
+    padding-top: 24px;
+    border-radius: 2px;
+    box-shadow: 0 2px 1px -1px rgba(0, 0, 0, .2), 0 1px 1px 0 rgba(0, 0, 0, .14), 0 1px 3px 0 rgba(0, 0, 0, .12);
+    position: relative;
+    text-decoration: none;
+}
+
+.mini-card__title {
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: .02em !important;
+    line-height: 1 !important;
+    text-align: center;
+}
+
+.mini-card__content {
+    font-size: 56px;
+    letter-spacing: -.02em !important;
+    line-height: 1.35 !important;
+    text-align: center;
+    font-weight: bold;
+}
+
+.mini-layout {
+    -ms-flex: 1 1 auto;
+    -ms-flex-wrap: nowrap;
+    -webkit-box-flex: 1;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: nowrap;
+    min-width: 0;
+    -webkit-box-direction: normal;
+    -webkit-box-orient: vertical;
+    flex-direction: column;
+}
+
+.--green {
+    border-top: 3px solid #06b67b;
+}
+
+.--red {
+    border-top: 3px solid #ff6049;
+}
+
+.--blue {
+    border-top: 3px solid #448aff;
+}
+
+.--market .mini-card {
+    flex-basis: 20%;
+    max-width: 20%;
 }
