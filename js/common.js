@@ -38,7 +38,8 @@ var app = new Vue({
     data: {
         // ADD YOUR NODES' IP INTO ARRAY BELOW
         nodes: [
-            '46.101.217.170'
+            '178.128.193.95',
+            '46.101.238.109'
         ],
         activeItem: 'wallet',
         nknPrice: 0,
@@ -280,7 +281,7 @@ var app = new Vue({
                 "enableLinks": true,
                 "showUser": true,
                 "showTime": true,
-                "showImages": true,
+                "showImages": false,
                 "lang": 'en'
 
             };
