@@ -389,7 +389,7 @@ let app = new Vue({
                 "customCallback": this.setTweets,
                 "profile": { "screenName": 'nkn_org' },
                 "domId": 'latest-tweets',
-                "maxTweets": 10,
+                "maxTweets": 20,
                 "enableLinks": true,
                 "showUser": true,
                 "showTime": true,
