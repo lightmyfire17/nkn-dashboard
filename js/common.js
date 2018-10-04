@@ -52,6 +52,7 @@ let app = new Vue({
         totalMainTokens: 0,
         usdProfitPerDay: 0,
         bandWidthCost: 1,
+        latestTiming: '',
         nodeCost: 1,
         usdProfit: 0,
         isLoading: true,
@@ -80,7 +81,6 @@ let app = new Vue({
         this.loadData()
     },
     mounted() {
-        this.getMiners()
         this.preload()
         this.fetch();
         setInterval(this.rotate, 6000);
@@ -388,13 +388,14 @@ let app = new Vue({
             let LatestTweets = {
                 "customCallback": this.setTweets,
                 "profile": { "screenName": 'nkn_org' },
-                "domId": 'exampleProfile',
-                "maxTweets": 20,
+                "domId": 'latest-tweets',
+                "maxTweets": 10,
                 "enableLinks": true,
                 "showUser": true,
                 "showTime": true,
-                "showImages": false,
-                "lang": 'en'
+                "showImages": true,
+                "lang": 'en',
+                "showRetweet": false
 
             };
             twitterFetcher.fetch(LatestTweets);
