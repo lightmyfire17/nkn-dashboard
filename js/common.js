@@ -143,12 +143,12 @@ let app = new Vue({
         preload: function() {
             this.isLoading = true
             if (this.nodesData.length === this.nodesLength) {
+                this.getNodesCount()
                 this.getBlocks()
                 this.getVersion()
                 this.getMiners()
                 this.getNodesDataCounter()
                 this.getLatestBlock()
-                this.getNodesCount()
                 this.getSeedNodeState()
                 this.getPrice()
                 setTimeout(() => {
@@ -191,6 +191,11 @@ let app = new Vue({
                     response = response.data.split('"').length / 2
                     this.crawlCounter = respoone = Math.ceil(response)
                 })
+            if (this.crawlCounter != 'Loading...') {
+                this.totalNodes = this.crawlCounter
+            } else {
+                this.totalNodes = 1
+            }
         },
         //Get mempool, status, version of seed node
         getSeedNodeState: function() {
@@ -243,6 +248,7 @@ let app = new Vue({
         },
         //Get data for user nodes and latest seed node block || Nodes page.
         loadData: function() {
+            this.userNodes = this.nodesLength
             this.nodesData = []
             this.latestBlocks = []
 
@@ -464,12 +470,6 @@ let app = new Vue({
         //Calculator.
         testnetCalc: function() {
             const secDay = 86400
-            if (this.crawlCounter != 'Loading...') {
-                this.totalNodes = this.crawlCounter
-            } else {
-                this.totalNodes = 1
-            }
-            this.userNodes = this.nodesLength
             let dailyMined = (secDay / this.blocktime) * 10
             let totalNodeCost = this.nodeCost * this.nodeTime * this.userNodes
             let totalBandwidthCost = this.bandWidthCost * this.nodeTime * this.userNodes
