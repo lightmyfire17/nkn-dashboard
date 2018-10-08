@@ -35,58 +35,73 @@ Vue.use(VueMaterial.default)
 
 let app = new Vue({
 
-    data: {
-        // ADD YOUR NODES' IP INTO ARRAY BELOW
-        nodes: [
-            '138.68.76.78',
-            '139.59.130.53'
-        ],
-        activeItem: 'wallet',
-        nknPrice: 'Loading...',
-        userNodes: 1,
-        totalNodes: 1,
-        blocktime: 12,
-        nodeTime: 1,
-        testTokensDaily: 0,
-        totalTestTokens: 0,
-        totalMainTokens: 0,
-        usdProfitPerDay: 0,
-        bandWidthCost: 1,
-        latestTiming: '',
-        nodeCost: 1,
-        usdProfit: 0,
-        isLoading: true,
-        nodesData: [],
-        latestBlock: 'Loading...',
-        allNodes: '',
-        latestBlocks: [],
-        balance: 0,
-        wallet: '',
-        tweets: [],
-        showing: 0,
-        blockCounter: 0,
-        walletAddress: '',
-        walletBalanceUsd: 0,
-        nknCap: 0,
-        nknVolume: 0,
-        nknRank: 0,
-        nkn24: 0,
-        crawlCounter: 'Loading...',
-        nknWeekly: 0,
-        seedVersion: '',
-        time: '',
-        miners: [],
-        currentOrder: 'default'
+    data() {
+        return {
+            // Auto Refresh time in seconds
+            refreshTime: "60",
+            // ADD YOUR NODES' IP INTO ARRAY BELOW
+            nodes: [
+                '138.68.76.78',
+                '139.59.130.53'
+            ],
+            activeItem: 'wallet',
+            nknPrice: 'Loading...',
+            userNodes: 1,
+            totalNodes: 1,
+            blocktime: 12,
+            nodeTime: 1,
+            testTokensDaily: 0,
+            totalTestTokens: 0,
+            totalMainTokens: 0,
+            usdProfitPerDay: 0,
+            bandWidthCost: 0,
+            latestTiming: '',
+            nodeCost: 0,
+            usdProfit: 0,
+            isLoading: true,
+            nodesData: [],
+            latestBlock: 'Loading...',
+            allNodes: '',
+            latestBlocks: [],
+            balance: 0,
+            nodesLength: null,
+            wallet: '',
+            tweets: [],
+            showing: 0,
+            blockCounter: 0,
+            walletAddress: '',
+            walletBalanceUsd: 0,
+            nknCap: 0,
+            nknVolume: 0,
+            nknRank: 0,
+            nkn24: 0,
+            crawlCounter: 'Loading...',
+            nknWeekly: 0,
+            seedVersion: '',
+            time: '',
+            timer: '',
+            miners: [],
+            currentOrder: 'default',
+            refreshActive: {
+                title: 'Enable',
+                active: false
+            },
+            nodesDataCounter: {
+                all: 0,
+                pf: 0,
+                ss: 0,
+                sf: 0,
+                er: 0
+            }
+        }
     },
     created() {
+        this.nodesLength = this.nodes.length
         this.loadData()
     },
     mounted() {
-        this.preload()
         this.fetch();
         setInterval(this.rotate, 6000);
-        setInterval(this.loadData, 60000);
-        setInterval(this.preload, 60010);
     },
     updated() {
         this.testnetCalc()
@@ -124,12 +139,18 @@ let app = new Vue({
         }
     },
     methods: {
+        //Preloader spinner and data render
         preload: function() {
             this.isLoading = true
-            if (this.nodesData.length === this.nodes.length) {
+            if (this.nodesData.length === this.nodesLength) {
                 this.getBlocks()
                 this.getVersion()
                 this.getMiners()
+                this.getNodesDataCounter()
+                this.getLatestBlock()
+                this.getNodesCount()
+                this.getSeedNodeState()
+                this.getPrice()
                 setTimeout(() => {
                     this.isLoading = false
                 }, 1500)
@@ -141,21 +162,28 @@ let app = new Vue({
             }
 
         },
-        loadData: function() {
-            this.nodesData = []
-            this.latestBlocks = []
-            axios.get('https://api.coinmarketcap.com/v2/ticker/2780/')
-                .then(response => {
-                    this.nknPrice = response.data.data.quotes.USD.price.toFixed(3)
-                    this.nknRank = response.data.data.rank
-                    this.nknCap = ((response.data.data.quotes.USD.market_cap) / 1000000).toFixed(2)
-                    this.nknVolume = ((response.data.data.quotes.USD.volume_24h) / 1000).toFixed(2)
-                    this.nkn24 = response.data.data.quotes.USD.percent_change_24h
-                    this.nknWeekly = response.data.data.quotes.USD.percent_change_7d
-                })
+        //Refresh button
+        refreshToggle: function() {
+            clearInterval(this.timer)
+            this.refreshActive.active = !this.refreshActive.active
+            if (this.refreshActive.title === 'Enable') {
 
+                this.refreshActive.title = 'Disable'
+            } else {
+                this.refreshActive.title = 'Enable'
+            }
+            this.timer = setInterval(this.autoRefresh, this.refreshTime * 1000);
+        },
+        //Auto Refresh trigger
+        autoRefresh: function() {
+            if (this.refreshActive.active === true) {
+                this.loadData()
+            }
+        },
+        //Get current node count in NKN network
+        getNodesCount: function() {
             const requestUrl = 'http://testnet.nkn.org/node_list/NKNNodeList'
-            const proxy = "https://cors-anywhere.herokuapp.com/"; // new line
+            const proxy = "https://cors-anywhere.herokuapp.com/";
             axios.get(proxy + requestUrl, {
 
                 })
@@ -163,21 +191,9 @@ let app = new Vue({
                     response = response.data.split('"').length / 2
                     this.crawlCounter = respoone = Math.ceil(response)
                 })
-
-
-            axios.post('http://testnet-node-0001.nkn.org:30003/', {
-                    "jsonrpc": "2.0",
-                    "method": "getlatestblockheight",
-                    "params": {},
-                    "id": 1
-                })
-                .then((response) => {
-                    this.latestBlock = response.data.result
-                    this.blockCounter = response.data.result
-
-                })
-                .catch((error) => {});
-
+        },
+        //Get mempool, status, version of seed node
+        getSeedNodeState: function() {
             axios.post('http://testnet-node-0001.nkn.org:30003/', {
                     "jsonrpc": "2.0",
                     "method": "getrawmempool",
@@ -212,9 +228,38 @@ let app = new Vue({
 
                 })
                 .catch((error) => {});
+        },
+        //Get NKN price data
+        getPrice: function() {
+            axios.get('https://api.coinmarketcap.com/v2/ticker/2780/')
+                .then(response => {
+                    this.nknPrice = response.data.data.quotes.USD.price.toFixed(3)
+                    this.nknRank = response.data.data.rank
+                    this.nknCap = ((response.data.data.quotes.USD.market_cap) / 1000000).toFixed(2)
+                    this.nknVolume = ((response.data.data.quotes.USD.volume_24h) / 1000).toFixed(2)
+                    this.nkn24 = response.data.data.quotes.USD.percent_change_24h
+                    this.nknWeekly = response.data.data.quotes.USD.percent_change_7d
+                })
+        },
+        //Get data for user nodes and latest seed node block || Nodes page.
+        loadData: function() {
+            this.nodesData = []
+            this.latestBlocks = []
 
+            axios.post('http://testnet-node-0001.nkn.org:30003/', {
+                    "jsonrpc": "2.0",
+                    "method": "getlatestblockheight",
+                    "params": {},
+                    "id": 1
+                })
+                .then((response) => {
+                    this.latestBlock = response.data.result
+                    this.blockCounter = response.data.result
 
-            for (let i = 0; i < this.nodes.length; i++) {
+                })
+                .catch((error) => {});
+
+            for (let i = 0; i < this.nodesLength; i++) {
                 axios.post('http://' + this.nodes[i] + ':30003/', {
                         "jsonrpc": "2.0",
                         "method": "getnodestate",
@@ -244,7 +289,11 @@ let app = new Vue({
 
                     })
             }
+
+            //Start preload function
+            this.preload()
         },
+        //Get latest Blocks info of user nodes || Nodes page.
         getBlocks: function() {
             for (let i = 0; i < this.nodesData.length; i++) {
                 axios.post('http://' + this.nodesData[i].Addr + ':30003/', {
@@ -270,6 +319,10 @@ let app = new Vue({
                         }
                     })
             }
+
+        },
+        //Get latest Blocks of Seed Node || Blocks page.
+        getLatestBlock: function() {
             axios.post('http://testnet-node-0001.nkn.org:30003/', {
                     "jsonrpc": "2.0",
                     "method": "getblock",
@@ -304,8 +357,60 @@ let app = new Vue({
 
                     this.latestTiming = blockStamp
                 })
-
         },
+        //Get coounters of user nodes states || Nodes page.
+        getNodesDataCounter: function() {
+            this.nodesDataCounter.pf = 0
+            this.nodesDataCounter.sf = 0
+            this.nodesDataCounter.ss = 0
+            this.nodesDataCounter.er = 0
+            this.nodesDataCounter.all = this.nodesData.length
+
+            for (let i in this.nodesData) {
+                switch (this.nodesData[i].SyncState) {
+                    case 'PersistFinished':
+                        this.nodesDataCounter.pf++
+                        break;
+                    case 'SyncFinished':
+                        this.nodesDataCounter.sf++
+                        break;
+                    case 'SyncStarted':
+                        this.nodesDataCounter.ss++
+                        break;
+                    case 'Error':
+                        this.nodesDataCounter.er++
+                        break;
+                }
+            }
+        },
+        //Get Version of user nodes || Nodes page.
+        getVersion: function() {
+            for (let i = 0; i < this.nodesData.length; i++) {
+                axios.post('http://' + this.nodesData[i].Addr + ':30003/', {
+                        "jsonrpc": "2.0",
+                        "method": "getversion",
+                        "params": {},
+                        "id": 1
+                    })
+                    .then((response) => {
+                        this.nodesData[i].version = response.data.result
+                    })
+                    .catch((response) => {
+                        if (response.status == undefined) {
+                            axios.post('http://' + this.nodesData[i].Addr + ':40003/', {
+                                    "jsonrpc": "2.0",
+                                    "method": "getversion",
+                                    "params": {},
+                                    "id": 1
+                                })
+                                .then((response) => {
+                                    this.nodesData[i].version = response.data.result
+                                })
+                        }
+                    })
+            }
+        },
+        //Get Block History data || Blocks page.
         getMiners: function() {
             this.blockCounter = this.latestBlock
             this.miners = []
@@ -356,34 +461,15 @@ let app = new Vue({
             }
 
         },
-        getVersion: function() {
-            for (let i = 0; i < this.nodesData.length; i++) {
-                axios.post('http://' + this.nodesData[i].Addr + ':30003/', {
-                        "jsonrpc": "2.0",
-                        "method": "getversion",
-                        "params": {},
-                        "id": 1
-                    })
-                    .then((response) => {
-                        this.nodesData[i].version = response.data.result
-                    })
-                    .catch((response) => {
-                        if (response.status == undefined) {
-                            axios.post('http://' + this.nodesData[i].Addr + ':40003/', {
-                                    "jsonrpc": "2.0",
-                                    "method": "getversion",
-                                    "params": {},
-                                    "id": 1
-                                })
-                                .then((response) => {
-                                    this.nodesData[i].version = response.data.result
-                                })
-                        }
-                    })
-            }
-        },
+        //Calculator.
         testnetCalc: function() {
-            let secDay = 86400
+            const secDay = 86400
+            if (this.crawlCounter != 'Loading...') {
+                this.totalNodes = this.crawlCounter
+            } else {
+                this.totalNodes = 1
+            }
+            this.userNodes = this.nodesLength
             let dailyMined = (secDay / this.blocktime) * 10
             let totalNodeCost = this.nodeCost * this.nodeTime * this.userNodes
             let totalBandwidthCost = this.bandWidthCost * this.nodeTime * this.userNodes

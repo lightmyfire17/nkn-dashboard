@@ -25,7 +25,7 @@
         <div class="page-container">
             <md-app>
                 <md-app-toolbar class="md-primary">
-                    <img class="logo" src="img/logo.png"> <span class="md-title">New Kind Of Dashboard</span><a class="release" href="https://github.com/thesheepman/nkn-dashboard/releases" target="_blank">v0.3.2</a>
+                    <img class="logo" src="img/logo.png"> <span class="md-title">New Kind Of Dashboard</span><a class="release" href="https://github.com/thesheepman/nkn-dashboard/releases" target="_blank">v0.4.1</a>
                 </md-app-toolbar>
                 <md-app-drawer md-permanent="card">
                     <md-list>
@@ -57,15 +57,15 @@
                             <div class="nav-btm__item-text bold"><img src="img/nodeCount.png" alt="">Nodes Count:</div>
                                 <div class="nav-btm__item-text">{{crawlCounter}}</div>
                             </div>
-                        <div class="nav-btm__item">
-                            <div class="nav-btm__item-text bold"><img class="block-img" src="img/block.png" alt="">Current Block:</div>
-                                <div class="nav-btm__item-text">{{latestBlock}}</div>
-                            </div>
                             <div class="nav-btm__item">
-                                <div class="nav-btm__item-text bold"><img src="img/coin.png" alt="">NKN Price:</div>
-                                    <div class="nav-btm__item-text">{{nknPrice}} $</div>
+                                <div class="nav-btm__item-text bold"><img class="block-img" src="img/block.png" alt="">Current Block:</div>
+                                    <div class="nav-btm__item-text">{{latestBlock}}</div>
                                 </div>
-                            </div>
+                                <div class="nav-btm__item">
+                                    <div class="nav-btm__item-text bold"><img src="img/coin.png" alt="">NKN Price:</div>
+                                        <div class="nav-btm__item-text">{{nknPrice}} $</div>
+                                    </div>
+                                </div>
                 </md-app-drawer>
                 <md-app-content>
                     <div v-if="activeItem ==='wallet'">
@@ -182,14 +182,15 @@
                         <div class="card-wrapper">
                             <md-card class='w-70'>
                                 <md-card-header>
-                                    <div class="md-title">Node Manager</div>
+                                    <div class="md-title">Auto Refresher</div>
                                 </md-card-header>
                                 <md-card-content>
-                                    <md-radio v-model="currentOrder" value="default">All states</md-radio>
-                                    <md-radio v-model="currentOrder" value="PersistFinished">PersistFinished</md-radio>
-                                    <md-radio v-model="currentOrder" value="SyncFinished">SyncFinished</md-radio>
-                                    <md-radio v-model="currentOrder" value="SyncStarted">SyncStarted</md-radio>
-                                    <md-radio v-model="currentOrder" value="Error">Error</md-radio>
+                                    <md-radio v-model="refreshTime" :disabled="refreshActive.active" value="30">30 sec</md-radio>
+                                    <md-radio v-model="refreshTime" :disabled="refreshActive.active" value="60">60 sec</md-radio>
+                                    <md-radio v-model="refreshTime" :disabled="refreshActive.active" value="300">5 minutes</md-radio>
+                                    <md-radio v-model="refreshTime" :disabled="refreshActive.active" value="600">10 minutes</md-radio>
+                                    <md-radio v-model="refreshTime" :disabled="refreshActive.active" value="900">15 minutes</md-radio>
+                                    <md-button v-on:click='refreshToggle' id="refreshToggle" v-bind:class="{accent: refreshActive.active}">{{refreshActive.title}} auto refresh</md-button>
                                 </md-card-content>
                             </md-card>
                             <md-card class='w-30'>
@@ -211,6 +212,18 @@
                                             <div class="market-item__data">{{seedVersion}}</div>
                                         </div>
                                     </div>
+                                </md-card-content>
+                            </md-card>
+                            <md-card class='w-70'>
+                                <md-card-header>
+                                    <div class="md-title">Node Manager</div>
+                                </md-card-header>
+                                <md-card-content>
+                                    <md-radio v-model="currentOrder" value="default">All states ({{nodesDataCounter.all}})</md-radio>
+                                    <md-radio v-model="currentOrder" value="PersistFinished">PersistFinished ({{nodesDataCounter.pf}})</md-radio>
+                                    <md-radio v-model="currentOrder" value="SyncFinished">SyncFinished ({{nodesDataCounter.sf}})</md-radio>
+                                    <md-radio v-model="currentOrder" value="SyncStarted">SyncStarted ({{nodesDataCounter.ss}})</md-radio>
+                                    <md-radio v-model="currentOrder" value="Error">Error ({{nodesDataCounter.er}})</md-radio>
                                 </md-card-content>
                             </md-card>
                         </div>

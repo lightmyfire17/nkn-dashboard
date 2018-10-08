@@ -395,3 +395,12 @@ p.tweet {
     flex-basis: 20%;
     max-width: 20%;
 }
+
+.accent {
+    background-color: #ff5252 !important;
+}
+
+#refreshToggle {
+    background-color: #42b983;
+    color: #fff !important;
+}
