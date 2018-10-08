@@ -54,6 +54,10 @@
                     </md-list>
                     <div class="nav-btm">
                         <div class="nav-btm__item">
+                            <div class="nav-btm__item-text bold"><img src="img/nodeCount.png" alt="">Nodes Count:</div>
+                                <div class="nav-btm__item-text">{{crawlCounter}}</div>
+                            </div>
+                        <div class="nav-btm__item">
                             <div class="nav-btm__item-text bold"><img class="block-img" src="img/block.png" alt="">Current Block:</div>
                                 <div class="nav-btm__item-text">{{latestBlock}}</div>
                             </div>
@@ -68,32 +72,32 @@
                         <div class="mini-card-wrapper --market">
                             <div class="mini-card --green">
                                 <div class="mini-layout">
-                                <div class="mini-card__title">NKN Price</div>
-                                <div class="mini-card__content">${{nknPrice}}</div>
+                                    <div class="mini-card__title">NKN Price</div>
+                                    <div class="mini-card__content">${{nknPrice}}</div>
                                 </div>
                             </div>
                             <div class="mini-card --blue">
                                 <div class="mini-layout">
-                                <div class="mini-card__title">Marketcap</div>
-                                <div class="mini-card__content">{{nknCap}}M</div>
+                                    <div class="mini-card__title">Marketcap</div>
+                                    <div class="mini-card__content">{{nknCap}}M</div>
                                 </div>
                             </div>
                             <div class="mini-card --green">
                                 <div class="mini-layout">
-                                <div class="mini-card__title">Daily Volume</div>
-                                <div class="mini-card__content">${{nknVolume}}K</div>
+                                    <div class="mini-card__title">Daily Volume</div>
+                                    <div class="mini-card__content">${{nknVolume}}K</div>
                                 </div>
                             </div>
                             <div class="mini-card --blue">
                                 <div class="mini-layout">
-                                <div class="mini-card__title">Market Rank</div>
-                                <div class="mini-card__content">#{{nknRank}}</div>
+                                    <div class="mini-card__title">Market Rank</div>
+                                    <div class="mini-card__content">#{{nknRank}}</div>
                                 </div>
                             </div>
                             <div class="mini-card --green">
                                 <div class="mini-layout">
-                                <div class="mini-card__title">Change 24</div>
-                                <div class="mini-card__content">{{nkn24}}%</div>
+                                    <div class="mini-card__title">Change 24</div>
+                                    <div class="mini-card__content">{{nkn24}}%</div>
                                 </div>
                             </div>
                         </div>
@@ -240,20 +244,20 @@
                         <div class="mini-card-wrapper">
                             <div class="mini-card --green">
                                 <div class="mini-layout">
-                                <div class="mini-card__title">Latest Block</div>
-                                <div class="mini-card__content">{{latestBlock}}</div>
+                                    <div class="mini-card__title">Latest Block</div>
+                                    <div class="mini-card__content">{{latestBlock}}</div>
                                 </div>
                             </div>
                             <div class="mini-card --blue">
                                 <div class="mini-layout">
-                                <div class="mini-card__title">Created</div>
-                                <div class="mini-card__content">{{latestTiming}}</div>
+                                    <div class="mini-card__title">Created</div>
+                                    <div class="mini-card__content">{{latestTiming}}</div>
                                 </div>
                             </div>
                             <div class="mini-card --red">
                                 <div class="mini-layout">
-                                <div class="mini-card__title">Mempool Size</div>
-                                <div class="mini-card__content">{{memPool}}</div>
+                                    <div class="mini-card__title">Mempool Size</div>
+                                    <div class="mini-card__content">{{memPool}}</div>
                                 </div>
                             </div>
                         </div>

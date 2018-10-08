@@ -38,11 +38,11 @@ let app = new Vue({
     data: {
         // ADD YOUR NODES' IP INTO ARRAY BELOW
         nodes: [
-            '178.128.193.95',
-            '46.101.238.109'
+            '138.68.76.78',
+            '139.59.130.53'
         ],
         activeItem: 'wallet',
-        nknPrice: 0,
+        nknPrice: 'Loading...',
         userNodes: 1,
         totalNodes: 1,
         blocktime: 12,
@@ -57,7 +57,7 @@ let app = new Vue({
         usdProfit: 0,
         isLoading: true,
         nodesData: [],
-        latestBlock: '',
+        latestBlock: 'Loading...',
         allNodes: '',
         latestBlocks: [],
         balance: 0,
@@ -71,6 +71,7 @@ let app = new Vue({
         nknVolume: 0,
         nknRank: 0,
         nkn24: 0,
+        crawlCounter: 'Loading...',
         nknWeekly: 0,
         seedVersion: '',
         time: '',
@@ -152,6 +153,17 @@ let app = new Vue({
                     this.nkn24 = response.data.data.quotes.USD.percent_change_24h
                     this.nknWeekly = response.data.data.quotes.USD.percent_change_7d
                 })
+
+            const requestUrl = 'http://testnet.nkn.org/node_list/NKNNodeList'
+            const proxy = "https://cors-anywhere.herokuapp.com/"; // new line
+            axios.get(proxy + requestUrl, {
+
+                })
+                .then((response) => {
+                    response = response.data.split('"').length / 2
+                    this.crawlCounter = respoone = Math.ceil(response)
+                })
+
 
             axios.post('http://testnet-node-0001.nkn.org:30003/', {
                     "jsonrpc": "2.0",
