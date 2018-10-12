@@ -274,7 +274,6 @@ let app = new Vue({
                     })
                     .then((response) => {
                         this.nodesData.push(response.data.result)
-
                     })
                     .catch((response) => {
                         if (response.status == undefined) {
@@ -475,11 +474,11 @@ let app = new Vue({
             let totalBandwidthCost = this.bandWidthCost * this.nodeTime * this.userNodes
             let dailyNodeCost = this.nodeCost / 30 * this.userNodes
             let dailyBandwidthCost = this.bandWidthCost / 30 * this.userNodes
-            this.testTokensDaily = dailyMined * this.userNodes / this.totalNodes
-            this.totalTestTokens = this.testTokensDaily * 30 * this.nodeTime
-            this.totalMainTokens = this.totalTestTokens / 5
-            this.usdProfitPerDay = this.testTokensDaily / 5 * this.nknPrice - dailyBandwidthCost - dailyNodeCost
-            this.usdProfit = this.nknPrice * this.totalMainTokens - totalBandwidthCost - totalNodeCost
+            this.testTokensDaily = (dailyMined * this.userNodes / this.totalNodes).toFixed(0)
+            this.totalTestTokens = (this.testTokensDaily * 30 * this.nodeTime).toFixed(0)
+            this.totalMainTokens = (this.totalTestTokens / 5).toFixed(0)
+            this.usdProfitPerDay = (this.testTokensDaily / 5 * this.nknPrice - dailyBandwidthCost - dailyNodeCost).toFixed(2)
+            this.usdProfit = (this.nknPrice * this.totalMainTokens - totalBandwidthCost - totalNodeCost).toFixed(2)
         },
 
         fetch: function() {
