@@ -4,6 +4,8 @@ New Kind Of Dashboard — web dashboard for NKN users, containing the following 
 * Balance Check
 * Mining Calculator
 * Node Tracker
+* Wallets Tracker
+* Network Blocks Tracker
 * NKN's Twitter Feedback
 
 At the moment, the application is not available online, but you can download and run it offline.
@@ -22,6 +24,32 @@ nodes: ['142.93.142.26', '167.99.2.183']
 4) Save changes and reload page
 
 > You can add as many nodes as you want.
+
+## Wallets Tracker
+To start tracking balance of your wallet, you need to add the NKN address and name of your wallet into the script via following steps:
+
+1) Go to `nkn-dashboard/js`
+2) Open core script file `common.js`
+3) Find line 45 and add ip of your node into array:
+```Line 45
+wallets: [{
+                "label": "Yilun",
+                "address": "Ndf68RHvgwQk5U6caHg9CuUnooeLGZ5UzS",
+                "balance": null,
+                "balanceUsd": null,
+                "preview": ""
+            },
+            {
+                "label": "SF",
+                "address": "NNHaXsaStomYG77RWNT1q6UvymKtbuejtj",
+                "balance": null,
+                "balanceUsd": null,
+                "preview": ""
+            }]
+```
+4) Save changes and reload page
+
+> You can add as many wallets as you want.
 
 ## NKN Resources
 * [Official Website](https://www.nkn.org/)

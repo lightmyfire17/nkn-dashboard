@@ -25,7 +25,7 @@
         <div class="page-container">
             <md-app>
                 <md-app-toolbar class="md-primary">
-                    <img class="logo" src="img/logo.png"> <span class="md-title">New Kind Of Dashboard</span><a class="release" href="https://github.com/thesheepman/nkn-dashboard/releases" target="_blank">v0.4.1</a>
+                    <img class="logo" src="img/logo.png"> <span class="md-title">New Kind Of Dashboard</span><a class="release" href="https://github.com/thesheepman/nkn-dashboard/releases" target="_blank">v0.5.0</a>
                 </md-app-toolbar>
                 <md-app-drawer md-permanent="card">
                     <md-list>
@@ -124,6 +124,21 @@
                                 </div>
                             </md-card-content>
                         </md-card>
+                        <div class="assets-wrapper">
+                            <md-card v-for="(wallet, index) in wallets" v-bind:key="index" class='assets w-25'>
+                                <md-card-content>
+                                    <div class="assets-preview">
+                                        <div class="assets-preview__text">{{wallet.preview}}</div>
+                                    </div>
+                                    <div class="assets-label">{{wallet.label}}</div>
+                                    <div class="assets-balance">
+                                        <div class="assets-balance__label">Balance</div>
+                                        <div class="assets-balance__item">{{wallet.balance}} NKN</div>
+                                        <div class="assets-balance__item">≈${{wallet.balanceUsd}}</div>
+                                    </div>
+                                </md-card-content>
+                            </md-card>
+                        </div>
                     </div>
                     <div class="card-expansion calc" v-if="activeItem ==='calc'">
                         <md-card>

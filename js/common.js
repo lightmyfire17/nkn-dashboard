@@ -30,20 +30,49 @@ getBalance = function() {
 
 "use strict"
 
-Vue.use(VueMaterial.default)
-
+Vue.use(VueMaterial.default);
 
 let app = new Vue({
 
     data() {
         return {
-            // Auto Refresh time in seconds
-            refreshTime: "60",
             // ADD YOUR NODES' IP INTO ARRAY BELOW
             nodes: [
                 '138.68.76.78',
                 '139.59.130.53'
             ],
+            // ADD YOUR WALLETS ADDRESSES HERE
+            wallets: [
+            {
+                "label": "Yilun",
+                "address": "Ndf68RHvgwQk5U6caHg9CuUnooeLGZ5UzS",
+                "balance": null,
+                "balanceUsd": null,
+                "preview": ""
+            },
+            {
+                "label": "SF",
+                "address": "NNHaXsaStomYG77RWNT1q6UvymKtbuejtj",
+                "balance": null,
+                "balanceUsd": null,
+                "preview": ""
+            },
+            {
+                "label": "ChrisT",
+                "address": "NUnC5kb7XVosyzryGYARSceGAzmcrEWBuw",
+                "balance": null,
+                "balanceUsd": null,
+                "preview": ""
+            },
+            {
+                "label": "Lukas",
+                "address": "NVKDBKYAJ55pXJSNj3TNFYaeZDGa8mT9V3",
+                "balance": null,
+                "balanceUsd": null,
+                "preview": ""
+            }
+            ],
+            refreshTime: "60",
             activeItem: 'wallet',
             nknPrice: 'Loading...',
             userNodes: 1,
@@ -151,6 +180,7 @@ let app = new Vue({
                 this.getLatestBlock()
                 this.getSeedNodeState()
                 this.getPrice()
+                this.getWalletsBalance()
                 setTimeout(() => {
                     this.isLoading = false
                 }, 1500)
@@ -178,6 +208,30 @@ let app = new Vue({
         autoRefresh: function() {
             if (this.refreshActive.active === true) {
                 this.loadData()
+            }
+        },
+
+        //Get wallets balance from array
+        getWalletsBalance: function(){
+            const self = this;
+            nknWallet.configure({
+                rpcAddr: 'http://testnet-node-0001.nkn.org:30003/',
+            });
+            let walletFromJson = "";
+            let lines = `{"Version":"0.0.1","PasswordHash":"be2ef4971b24405df0541f95fe6158ac661e69971337ff7260b219d1056ebc3b","MasterKey":"cb6624d3be4b23ba9fb9ed746595817ebc0e63a44772175a638548ca264a329f","IV":"2a18decef1149b47fc9f50965b055b2b","PrivateKeyEncrypted":"5158f5e75067629c963524f30e62df14cc3cbf37422f72e23c2fce9b303d11af","Address":"NcNRJJZoQBpEZhFfHM5Gjrzc9bSK6kda7u","ProgramHash":"b482a02031a097da723e8121b54bfe6671b9e576","ContractData":"232103b9b80d4d3d25bc7719fe7a45aa283346488988179bbc1852d705ef470930cb74ac0100b482a02031a097da723e8121b54bfe6671b9e576"}`
+            let p = `test`;
+            let updatedBalance = 0
+            walletFromJson = nknWallet.loadJsonWallet(lines, p);
+
+            for(let i =0; i<self.wallets.length; i++){
+                self.wallets[i].preview = self.wallets[i].label.charAt(0)
+                walletFromJson.address = self.wallets[i].address;
+                walletFromJson.queryAssetBalance().then(function(value) {
+                   self.wallets[i].balance = value.toString();
+                   self.wallets[i].balanceUsd = (self.wallets[i].balance*self.nknPrice/5).toFixed(0)
+                }).catch(function(error) {
+                    self.wallets[i].balance = 'query balance fail'
+                })
             }
         },
         //Get current node count in NKN network
