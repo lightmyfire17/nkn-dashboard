@@ -38,14 +38,13 @@ let app = new Vue({
         return {
             // ADD YOUR NODES' IP INTO ARRAY BELOW
             nodes: [
-			'159.65.207.149',
-			'159.65.192.246',
-			'159.65.196.1'
+'159.65.207.149',
+'159.65.192.246'
             ],
             // ADD YOUR WALLETS ADDRESSES HERE
             wallets: [
             {
-                "label": "Obama",
+                "label": "lightmyfire",
                 "address": "NhWjY9iwD5Ad8DafiEWbTo4buLpBomdttH",
                 "balance": null,
                 "balanceUsd": null,
@@ -444,7 +443,7 @@ let app = new Vue({
         //Calculator.
         testnetCalc: function() {
             const secDay = 86400
-            let dailyMined = (secDay / this.blocktime) * 10
+            let dailyMined = (secDay / this.blocktime) * 15
             let totalNodeCost = this.nodeCost * this.nodeTime * this.userNodes
             let totalBandwidthCost = this.bandWidthCost * this.nodeTime * this.userNodes
             let dailyNodeCost = this.nodeCost / 30 * this.userNodes
