@@ -488,3 +488,10 @@ p.tweet {
     margin-bottom: 10px;
     color: #131313;
 }
+.preloader-counter{
+    color: #6a9dec;
+    margin-top: 20px;
+}
+.preloader-wrapper{
+    text-align: center;
+}

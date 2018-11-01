@@ -38,35 +38,29 @@ let app = new Vue({
         return {
             // ADD YOUR NODES' IP INTO ARRAY BELOW
             nodes: [
-                '138.68.76.78',
-                '139.59.130.53'
+			'159.65.207.149',
+			'159.65.192.246',
+			'159.65.196.1'
             ],
             // ADD YOUR WALLETS ADDRESSES HERE
             wallets: [
             {
-                "label": "Yilun",
-                "address": "Ndf68RHvgwQk5U6caHg9CuUnooeLGZ5UzS",
+                "label": "Obama",
+                "address": "NhWjY9iwD5Ad8DafiEWbTo4buLpBomdttH",
                 "balance": null,
                 "balanceUsd": null,
                 "preview": ""
             },
             {
-                "label": "SF",
-                "address": "NNHaXsaStomYG77RWNT1q6UvymKtbuejtj",
-                "balance": null,
-                "balanceUsd": null,
-                "preview": ""
-            },
-            {
-                "label": "ChrisT",
-                "address": "NUnC5kb7XVosyzryGYARSceGAzmcrEWBuw",
-                "balance": null,
-                "balanceUsd": null,
-                "preview": ""
-            },
-            {
-                "label": "Lukas",
+                "label": "Ebudka",
                 "address": "NVKDBKYAJ55pXJSNj3TNFYaeZDGa8mT9V3",
+                "balance": null,
+                "balanceUsd": null,
+                "preview": ""
+            },
+            {
+                "label": "Karlik",
+                "address": "Ne45tkwdzQzvYbSG28W4nP45MVUpV3sY55",
                 "balance": null,
                 "balanceUsd": null,
                 "preview": ""
@@ -171,10 +165,8 @@ let app = new Vue({
         //Preloader spinner and data render
         preload: function() {
             this.isLoading = true
-            if (this.nodesData.length === this.nodesLength) {
+            if (this.nodes.length === this.nodesData.length) {
                 this.getNodesCount()
-                this.getBlocks()
-                this.getVersion()
                 this.getMiners()
                 this.getNodesDataCounter()
                 this.getLatestBlock()
@@ -236,14 +228,11 @@ let app = new Vue({
         },
         //Get current node count in NKN network
         getNodesCount: function() {
-            const requestUrl = 'http://testnet.nkn.org/node_list/NKNNodeList'
-            const proxy = "https://cors-anywhere.herokuapp.com/";
-            axios.get(proxy + requestUrl, {
+            axios.get('https://nknx.org/api/crawledNodes', {
 
                 })
                 .then((response) => {
-                    response = response.data.split('"').length / 2
-                    this.crawlCounter = respoone = Math.ceil(response)
+                    this.crawlCounter = response.data.length
                 })
             if (this.crawlCounter != 'Loading...') {
                 this.totalNodes = this.crawlCounter
@@ -329,56 +318,15 @@ let app = new Vue({
                     .then((response) => {
                         this.nodesData.push(response.data.result)
                     })
-                    .catch((response) => {
-                        if (response.status == undefined) {
-                            axios.post('http://' + this.nodes[i] + ':40003/', {
-                                    "jsonrpc": "2.0",
-                                    "method": "getnodestate",
-                                    "params": {},
-                                    "id": 1
-                                })
-                                .then((response) => {
-                                    this.nodesData.push(response.data.result)
-
-                                })
-                                .catch((error) => {
-                                    this.nodesData.push({ 'Addr': this.nodes[i], 'SyncState': 'Error' })
-                                });
-                        }
+                    .catch((error) => {
+                       this.nodesData.push({ 'Addr': this.nodes[i], 'SyncState': 'Error' })
 
                     })
+					
             }
 
             //Start preload function
             this.preload()
-        },
-        //Get latest Blocks info of user nodes || Nodes page.
-        getBlocks: function() {
-            for (let i = 0; i < this.nodesData.length; i++) {
-                axios.post('http://' + this.nodesData[i].Addr + ':30003/', {
-                        "jsonrpc": "2.0",
-                        "method": "getlatestblockheight",
-                        "params": {},
-                        "id": 1
-                    })
-                    .then((response) => {
-                        this.nodesData[i].latestBlocks = response.data.result
-                    })
-                    .catch((response) => {
-                        if (response.status == undefined) {
-                            axios.post('http://' + this.nodesData[i].Addr + ':40003/', {
-                                    "jsonrpc": "2.0",
-                                    "method": "getlatestblockheight",
-                                    "params": {},
-                                    "id": 1
-                                })
-                                .then((response) => {
-                                    this.nodesData[i].latestBlocks = response.data.result
-                                })
-                        }
-                    })
-            }
-
         },
         //Get latest Blocks of Seed Node || Blocks page.
         getLatestBlock: function() {
@@ -440,33 +388,6 @@ let app = new Vue({
                         this.nodesDataCounter.er++
                         break;
                 }
-            }
-        },
-        //Get Version of user nodes || Nodes page.
-        getVersion: function() {
-            for (let i = 0; i < this.nodesData.length; i++) {
-                axios.post('http://' + this.nodesData[i].Addr + ':30003/', {
-                        "jsonrpc": "2.0",
-                        "method": "getversion",
-                        "params": {},
-                        "id": 1
-                    })
-                    .then((response) => {
-                        this.nodesData[i].version = response.data.result
-                    })
-                    .catch((response) => {
-                        if (response.status == undefined) {
-                            axios.post('http://' + this.nodesData[i].Addr + ':40003/', {
-                                    "jsonrpc": "2.0",
-                                    "method": "getversion",
-                                    "params": {},
-                                    "id": 1
-                                })
-                                .then((response) => {
-                                    this.nodesData[i].version = response.data.result
-                                })
-                        }
-                    })
             }
         },
         //Get Block History data || Blocks page.

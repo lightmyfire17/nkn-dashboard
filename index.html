@@ -20,12 +20,15 @@
 <body>
     <div id="app">
         <div class="preloader" v-if="isLoading">
-            <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
+            <div class="preloader-wrapper">
+                <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
+                <div class="preloader-counter">{{nodesData.length}}/{{nodes.length}}</div>
+            </div>
         </div>
         <div class="page-container">
             <md-app>
                 <md-app-toolbar class="md-primary">
-                    <img class="logo" src="img/logo.png"> <span class="md-title">New Kind Of Dashboard</span><a class="release" href="https://github.com/thesheepman/nkn-dashboard/releases" target="_blank">v0.5.0</a>
+                    <img class="logo" src="img/logo.png"> <span class="md-title">New Kind Of Dashboard</span><a class="release" href="https://github.com/thesheepman/nkn-dashboard/releases" target="_blank">v0.5.1</a>
                 </md-app-toolbar>
                 <md-app-drawer md-permanent="card">
                     <md-list>
@@ -256,9 +259,9 @@
                                 <md-table-cell md-numeric>{{index+1}}</md-table-cell>
                                 <md-table-cell>{{node.Addr}}</md-table-cell>
                                 <md-table-cell>{{node.SyncState}}</md-table-cell>
-                                <md-table-cell>{{node.latestBlocks}}</md-table-cell>
-                                <md-table-cell>{{node.TxnCnt}}</md-table-cell>
-                                <md-table-cell>{{node.version}}</md-table-cell>
+                                <md-table-cell>{{node.Height}}</md-table-cell>
+                                <md-table-cell>{{node.RxTxnCnt}}</md-table-cell>
+                                <md-table-cell>{{node.Version}}</md-table-cell>
                             </md-table-row>
                         </md-table>
                     </div>
