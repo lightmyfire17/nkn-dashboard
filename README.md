@@ -10,7 +10,7 @@ New Kind Of Dashboard — web dashboard for NKN users, containing the following 
 
 At the moment, the application is not available online, but you can download and run it offline.
 
-> The latest stable version can be downloaded [here](https://github.com/thesheepman/nkn-dashboard/releases).
+> New features will be implemented into [nknX](https://github.com/nknx-org/nknx).
 
 ## Node Tracking
 To start tracking state of nodes, you need to add the ip addresses of your nodes into the script via following steps:
