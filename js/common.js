@@ -38,70 +38,24 @@ let app = new Vue({
         return {
             // ADD YOUR NODES' IP INTO ARRAY BELOW
             nodes: [
-'159.65.207.149',
-'159.65.192.246',
-'159.65.196.1',
-'128.199.55.192',
-'159.65.200.254',
-'159.65.204.182',
-'174.138.11.48',
-'159.65.207.107',
-'174.138.13.2',
-'188.166.0.223',
-'167.99.221.173',
-'206.189.13.42',
-'206.189.1.25',
-'206.189.9.3',
-'206.189.9.75',
-'206.189.12.91',
-'128.199.34.140',
-'188.166.103.125',
-'206.189.14.45',
-'206.189.13.12',
-'206.189.111.53',
-'206.189.111.15',
-'206.189.96.145',
-'167.99.39.25',
-'159.65.202.150',
-'167.99.39.16',
-'167.99.213.105',
-'206.189.111.36',
-'174.138.10.52',
-'167.99.215.174',
-'206.189.100.237',
-'206.189.111.96',
-'206.189.111.136',
-'206.189.100.209',
-'206.189.108.45',
-'206.189.100.239',
-'206.189.100.224',
-'206.189.100.242',
-'206.189.96.217',
-'206.189.100.241'
+                '40.127.106.2',
+                '40.117.230.130'
             ],
             // ADD YOUR WALLETS ADDRESSES HERE
-            wallets: [
-            {
-                "label": "lightmyfire",
-                "address": "NhWjY9iwD5Ad8DafiEWbTo4buLpBomdttH",
-                "balance": null,
-                "balanceUsd": null,
-                "preview": ""
-            },
-            {
-                "label": "Ebudka",
-                "address": "NVKDBKYAJ55pXJSNj3TNFYaeZDGa8mT9V3",
-                "balance": null,
-                "balanceUsd": null,
-                "preview": ""
-            },
-            {
-                "label": "Karlik",
-                "address": "Ne45tkwdzQzvYbSG28W4nP45MVUpV3sY55",
-                "balance": null,
-                "balanceUsd": null,
-                "preview": ""
-            }
+            wallets: [{
+                    "label": "lightmyfire",
+                    "address": "NhWjY9iwD5Ad8DafiEWbTo4buLpBomdttH",
+                    "balance": null,
+                    "balanceUsd": null,
+                    "preview": ""
+                },
+                {
+                    "label": "Ebudka",
+                    "address": "NVKDBKYAJ55pXJSNj3TNFYaeZDGa8mT9V3",
+                    "balance": null,
+                    "balanceUsd": null,
+                    "preview": ""
+                }
             ],
             refreshTime: "60",
             activeItem: 'wallet',
@@ -241,7 +195,7 @@ let app = new Vue({
         },
 
         //Get wallets balance from array
-        getWalletsBalance: function(){
+        getWalletsBalance: function() {
             const self = this;
             nknWallet.configure({
                 rpcAddr: 'http://testnet-node-0001.nkn.org:30003/',
@@ -252,12 +206,12 @@ let app = new Vue({
             let updatedBalance = 0
             walletFromJson = nknWallet.loadJsonWallet(lines, p);
 
-            for(let i =0; i<self.wallets.length; i++){
+            for (let i = 0; i < self.wallets.length; i++) {
                 self.wallets[i].preview = self.wallets[i].label.charAt(0)
                 walletFromJson.address = self.wallets[i].address;
                 walletFromJson.queryAssetBalance().then(function(value) {
-                   self.wallets[i].balance = value.toString();
-                   self.wallets[i].balanceUsd = (self.wallets[i].balance*self.nknPrice/5).toFixed(0)
+                    self.wallets[i].balance = value.toString();
+                    self.wallets[i].balanceUsd = (self.wallets[i].balance * self.nknPrice / 5).toFixed(0)
                 }).catch(function(error) {
                     self.wallets[i].balance = 'query balance fail'
                 })
@@ -265,7 +219,7 @@ let app = new Vue({
         },
         //Get current node count in NKN network
         getNodesCount: function() {
-            axios.get('https://nknx.org/api/crawledNodes', {
+            axios.get('https://api.nknx.org/crawledNodes', {
 
                 })
                 .then((response) => {
@@ -356,10 +310,13 @@ let app = new Vue({
                         this.nodesData.push(response.data.result)
                     })
                     .catch((error) => {
-                       this.nodesData.push({ 'Addr': this.nodes[i], 'SyncState': 'Error' })
+                        this.nodesData.push({
+                            'Addr': this.nodes[i],
+                            'SyncState': 'Error'
+                        })
 
                     })
-					
+
             }
 
             //Start preload function
@@ -370,7 +327,9 @@ let app = new Vue({
             axios.post('http://testnet-node-0001.nkn.org:30003/', {
                     "jsonrpc": "2.0",
                     "method": "getblock",
-                    "params": { "height": this.latestBlock },
+                    "params": {
+                        "height": this.latestBlock
+                    },
                     "id": 1
                 })
                 .then((response) => {
@@ -436,7 +395,9 @@ let app = new Vue({
                 axios.post('http://testnet-node-0001.nkn.org:30003/', {
                         "jsonrpc": "2.0",
                         "method": "getblock",
-                        "params": { "height": this.blockCounter },
+                        "params": {
+                            "height": this.blockCounter
+                        },
                         "id": 1
                     })
                     .then((response) => {
@@ -496,7 +457,9 @@ let app = new Vue({
         fetch: function() {
             let LatestTweets = {
                 "customCallback": this.setTweets,
-                "profile": { "screenName": 'nkn_org' },
+                "profile": {
+                    "screenName": 'nkn_org'
+                },
                 "domId": 'latest-tweets',
                 "maxTweets": 20,
                 "enableLinks": true,
