@@ -6,7 +6,7 @@ getBalance = function() {
         })
 
     nknWallet.configure({
-        rpcAddr: 'http://testnet-node-0001.nkn.org:30003/',
+        rpcAddr: 'http://testnet-seed-0008.nkn.org:30003/',
     });
     let walletFromJson = "";
     let lines = `{"Version":"0.0.1","PasswordHash":"be2ef4971b24405df0541f95fe6158ac661e69971337ff7260b219d1056ebc3b","MasterKey":"cb6624d3be4b23ba9fb9ed746595817ebc0e63a44772175a638548ca264a329f","IV":"2a18decef1149b47fc9f50965b055b2b","PrivateKeyEncrypted":"5158f5e75067629c963524f30e62df14cc3cbf37422f72e23c2fce9b303d11af","Address":"NcNRJJZoQBpEZhFfHM5Gjrzc9bSK6kda7u","ProgramHash":"b482a02031a097da723e8121b54bfe6671b9e576","ContractData":"232103b9b80d4d3d25bc7719fe7a45aa283346488988179bbc1852d705ef470930cb74ac0100b482a02031a097da723e8121b54bfe6671b9e576"}`
@@ -38,8 +38,8 @@ let app = new Vue({
         return {
             // ADD YOUR NODES' IP INTO ARRAY BELOW
             nodes: [
-                '40.127.106.2',
-                '40.117.230.130'
+                '193.9.60.218',
+                '35.244.20.200'
             ],
             // ADD YOUR WALLETS ADDRESSES HERE
             wallets: [{
@@ -89,6 +89,7 @@ let app = new Vue({
             nknVolume: 0,
             nknRank: 0,
             nkn24: 0,
+            relayedMessages: 0,
             crawlCounter: 'Loading...',
             nknWeekly: 0,
             seedVersion: '',
@@ -105,6 +106,7 @@ let app = new Vue({
                 pf: 0,
                 ss: 0,
                 sf: 0,
+                ws: 0,
                 er: 0
             }
         }
@@ -125,16 +127,16 @@ let app = new Vue({
             let customNodes = []
             if (this.currentOrder === 'default') {
                 function compare(a, b) {
-                    if (a.SyncState < b.SyncState)
+                    if (a.syncState < b.syncState)
                         return -1;
-                    if (a.SyncState > b.SyncState)
+                    if (a.syncState > b.syncState)
                         return 1;
                     return 0;
                 }
                 return this.nodesData.sort(compare);
             } else {
                 for (i = 0; i < this.nodesData.length; i++) {
-                    if (this.nodesData[i].SyncState === this.currentOrder) {
+                    if (this.nodesData[i].syncState === this.currentOrder) {
                         customNodes.push(this.nodesData[i])
                     }
                 }
@@ -198,7 +200,7 @@ let app = new Vue({
         getWalletsBalance: function() {
             const self = this;
             nknWallet.configure({
-                rpcAddr: 'http://testnet-node-0001.nkn.org:30003/',
+                rpcAddr: 'http://testnet-seed-0008.nkn.org:30003/',
             });
             let walletFromJson = "";
             let lines = `{"Version":"0.0.1","PasswordHash":"be2ef4971b24405df0541f95fe6158ac661e69971337ff7260b219d1056ebc3b","MasterKey":"cb6624d3be4b23ba9fb9ed746595817ebc0e63a44772175a638548ca264a329f","IV":"2a18decef1149b47fc9f50965b055b2b","PrivateKeyEncrypted":"5158f5e75067629c963524f30e62df14cc3cbf37422f72e23c2fce9b303d11af","Address":"NcNRJJZoQBpEZhFfHM5Gjrzc9bSK6kda7u","ProgramHash":"b482a02031a097da723e8121b54bfe6671b9e576","ContractData":"232103b9b80d4d3d25bc7719fe7a45aa283346488988179bbc1852d705ef470930cb74ac0100b482a02031a097da723e8121b54bfe6671b9e576"}`
@@ -233,30 +235,19 @@ let app = new Vue({
         },
         //Get mempool, status, version of seed node
         getSeedNodeState: function() {
-            axios.post('http://testnet-node-0001.nkn.org:30003/', {
-                    "jsonrpc": "2.0",
-                    "method": "getrawmempool",
-                    "params": {},
-                    "id": 1
-                })
-                .then((response) => {
-                    this.memPool = response.data.result.length
-
-                })
-                .catch((error) => {});
-
-            axios.post('http://testnet-node-0001.nkn.org:30003/', {
+            axios.post('http://testnet-seed-0008.nkn.org:30003/', {
                     "jsonrpc": "2.0",
                     "method": "getnodestate",
                     "params": {},
                     "id": 1
                 })
                 .then((response) => {
-                    this.seedStatus = response.data.result.SyncState
+                    this.seedStatus = response.data.result.syncState
+                    this.relayedMessages = response.data.result.relayMessageCount
                 })
                 .catch((error) => {});
 
-            axios.post('http://testnet-node-0001.nkn.org:30003/', {
+            axios.post('http://testnet-seed-0008.nkn.org:30003/', {
                     "jsonrpc": "2.0",
                     "method": "getversion",
                     "params": {},
@@ -286,7 +277,7 @@ let app = new Vue({
             this.nodesData = []
             this.latestBlocks = []
 
-            axios.post('http://testnet-node-0001.nkn.org:30003/', {
+            axios.post('http://testnet-seed-0008.nkn.org:30003/', {
                     "jsonrpc": "2.0",
                     "method": "getlatestblockheight",
                     "params": {},
@@ -312,7 +303,7 @@ let app = new Vue({
                     .catch((error) => {
                         this.nodesData.push({
                             'Addr': this.nodes[i],
-                            'SyncState': 'Error'
+                            'syncState': 'Error'
                         })
 
                     })
@@ -324,7 +315,7 @@ let app = new Vue({
         },
         //Get latest Blocks of Seed Node || Blocks page.
         getLatestBlock: function() {
-            axios.post('http://testnet-node-0001.nkn.org:30003/', {
+            axios.post('http://testnet-seed-0008.nkn.org:30003/', {
                     "jsonrpc": "2.0",
                     "method": "getblock",
                     "params": {
@@ -367,10 +358,11 @@ let app = new Vue({
             this.nodesDataCounter.sf = 0
             this.nodesDataCounter.ss = 0
             this.nodesDataCounter.er = 0
+            this.nodesDataCounter.ws = 0
             this.nodesDataCounter.all = this.nodesData.length
 
             for (let i in this.nodesData) {
-                switch (this.nodesData[i].SyncState) {
+                switch (this.nodesData[i].syncState) {
                     case 'PersistFinished':
                         this.nodesDataCounter.pf++
                         break;
@@ -379,6 +371,9 @@ let app = new Vue({
                         break;
                     case 'SyncStarted':
                         this.nodesDataCounter.ss++
+                        break;
+                    case 'WaitForSyncing':
+                        this.nodesDataCounter.ws++
                         break;
                     case 'Error':
                         this.nodesDataCounter.er++
@@ -392,7 +387,7 @@ let app = new Vue({
             this.miners = []
             for (let i = 0; i < 20; i++) {
 
-                axios.post('http://testnet-node-0001.nkn.org:30003/', {
+                axios.post('http://testnet-seed-0008.nkn.org:30003/', {
                         "jsonrpc": "2.0",
                         "method": "getblock",
                         "params": {
