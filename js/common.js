@@ -302,7 +302,7 @@ let app = new Vue({
                     })
                     .catch((error) => {
                         this.nodesData.push({
-                            'Addr': this.nodes[i],
+                            'addr': this.nodes[i],
                             'syncState': 'Error'
                         })
 
