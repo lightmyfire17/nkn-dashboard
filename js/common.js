@@ -1,8 +1,8 @@
 getBalance = function() {
     let nknPrice
-    axios.get('https://api.coinmarketcap.com/v2/ticker/2780/')
+    axios.get('https://price.nknx.org/price?quote=NKN&currency=USD')
         .then(response => {
-            nknPrice = response.data.data.quotes.USD.price.toFixed(3)
+            nknPrice = response.data[0].prices[0].price.toFixed(3)
         })
 
     nknWallet.configure({
@@ -261,14 +261,14 @@ let app = new Vue({
         },
         //Get NKN price data
         getPrice: function() {
-            axios.get('https://api.coinmarketcap.com/v2/ticker/2780/')
+            axios.get('https://price.nknx.org/price?quote=NKN&currency=USD')
                 .then(response => {
-                    this.nknPrice = response.data.data.quotes.USD.price.toFixed(3)
-                    this.nknRank = response.data.data.rank
-                    this.nknCap = ((response.data.data.quotes.USD.market_cap) / 1000000).toFixed(2)
-                    this.nknVolume = ((response.data.data.quotes.USD.volume_24h) / 1000).toFixed(2)
-                    this.nkn24 = response.data.data.quotes.USD.percent_change_24h
-                    this.nknWeekly = response.data.data.quotes.USD.percent_change_7d
+                    this.nknPrice = response.data[0].prices[0].price.toFixed(3)
+                    this.nknRank = response.data[0].cmc_rank
+                    this.nknCap = (response.data[0].prices[0].market_cap / 1000000).toFixed(2)
+                    this.nknVolume = ((response.data[0].prices[0].volume_24h) / 1000000).toFixed(2)
+                    this.nkn24 = response.data[0].prices[0].percent_change_24h.toFixed(2)
+                    this.nknWeekly = response.data[0].prices[0].percent_change_7d.toFixed(2)
                 })
         },
         //Get data for user nodes and latest seed node block || Nodes page.
