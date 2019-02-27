@@ -54,7 +54,7 @@ wallets: [{
 ## NKN Resources
 * [Official Website](https://www.nkn.org/)
 * [Testnet](http://testnet.nkn.org/)
-* [Web Wallet](https://newkindofwallet.com/)
+* [NKNx](https://nknx.org/)
 
 ## NKN Community
 * [Discord](https://discord.gg/c7mTynX)
