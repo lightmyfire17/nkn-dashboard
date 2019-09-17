@@ -38,12 +38,12 @@
                             <md-icon>account_balance_wallet</md-icon>
                             <span class="md-list-item-text">Balance</span>
                         </md-list-item>
-                        <md-list-item id="tab-pages" md-label="Calculator" v-on:click='activeItem = "calc"'>
+                        <!-- <md-list-item id="tab-pages" md-label="Calculator" v-on:click='activeItem = "calc"'>
                             <md-icon>
                                 build
                             </md-icon>
                             <span class="md-list-item-text">Calculator</span>
-                        </md-list-item>
+                        </md-list-item> -->
                         <md-list-item id="tab-posts" md-label="Nodes" v-on:click='activeItem = "node"'>
                             <md-icon>language</md-icon>
                             <span class="md-list-item-text">Nodes</span>
@@ -125,7 +125,6 @@
                                     <div class="balance-block">
                                         <md-chip class='balance-marker usd'>USD</md-chip><span class="walletBalanceUsd"></span>
                                     </div>
-                                    <div class="note">*Speculative balance calculated at 5:1 testnet:mainnet ratio, at current market prices. Not to be used to plan your finances, since there is no guarantee you can actually redeem shown balance.</div>
                                 </div>
                             </md-card-content>
                         </md-card>
@@ -146,7 +145,7 @@
                             </md-card>
                         </div>
                     </div>
-                    <div class="card-expansion calc" v-if="activeItem ==='calc'">
+                    <!-- <div class="card-expansion calc" v-if="activeItem ==='calc'">
                         <md-card>
                             <md-card-header>
                                 <div class="md-title">Mining Calculator</div>
@@ -197,7 +196,7 @@
                                 <div>USD Profit per {{nodeTime}} months: <span>${{usdProfit}}</span></div>
                             </md-card-content>
                         </md-card>
-                    </div>
+                    </div> -->
                     <!-- node -->
                     <div v-if="activeItem ==='node'">
                         <div class="card-wrapper">
@@ -241,11 +240,11 @@
                                 </md-card-header>
                                 <md-card-content>
                                     <md-radio v-model="currentOrder" value="default">All states ({{nodesDataCounter.all}})</md-radio>
-                                    <md-radio v-model="currentOrder" value="WaitForSyncing">WaitForSyncing ({{nodesDataCounter.ws}})</md-radio>
-                                    <md-radio v-model="currentOrder" value="PersistFinished">PersistFinished ({{nodesDataCounter.pf}})</md-radio>
-                                    <md-radio v-model="currentOrder" value="SyncFinished">SyncFinished ({{nodesDataCounter.sf}})</md-radio>
-                                    <md-radio v-model="currentOrder" value="SyncStarted">SyncStarted ({{nodesDataCounter.ss}})</md-radio>
-                                    <md-radio v-model="currentOrder" value="Error">Error ({{nodesDataCounter.er}})</md-radio>
+                                    <md-radio v-model="currentOrder" value="WAIT_FOR_SYNCING">WaitForSyncing ({{nodesDataCounter.ws}})</md-radio>
+                                    <md-radio v-model="currentOrder" value="PERSIST_FINISHED">PersistFinished ({{nodesDataCounter.pf}})</md-radio>
+                                    <md-radio v-model="currentOrder" value="SYNC_FINISHED">SyncFinished ({{nodesDataCounter.sf}})</md-radio>
+                                    <md-radio v-model="currentOrder" value="SYNC_STARTED">SyncStarted ({{nodesDataCounter.ss}})</md-radio>
+                                    <md-radio v-model="currentOrder" value="ERROR">Error ({{nodesDataCounter.er}})</md-radio>
                                 </md-card-content>
                             </md-card>
                         </div>
@@ -300,15 +299,13 @@
                             <md-table-row>
                                 <md-table-head>Block Height</md-table-head>
                                 <md-table-head>Created</md-table-head>
-                                <md-table-head>Miner</md-table-head>
-                                <md-table-head>Reward</md-table-head>
+                                <md-table-head>Hash</md-table-head>
                                 <md-table-head>Transactions</md-table-head>
                             </md-table-row>
                             <md-table-row v-for="(miner,index) in sortedMiners" v-bind:key="index">
                                 <md-table-cell>{{miner.height}}</md-table-cell>
                                 <md-table-cell>{{miner.time}}</md-table-cell>
-                                <md-table-cell>{{miner.miner}}</md-table-cell>
-                                <md-table-cell>{{miner.reward}} NKN</md-table-cell>
+                                <md-table-cell>{{miner.hash}}</md-table-cell>
                                 <md-table-cell>{{miner.tx}}</md-table-cell>
                             </md-table-row>
                         </md-table>
